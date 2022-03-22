@@ -2,17 +2,105 @@
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <unistd.h>
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <cstring>
+#include <assert.h>
+#include <png.h>
+using namespace std;
+bool platspec_loadOBJ(const char * filename,vector<glm::vec3> &verticess,vector<glm::vec2> &uvs, vector<glm::vec3> &normals, vector<GLushort> &elements,vector<GLushort> &uvelements){
+    FILE * obj = fopen(filename,"r");
+    char * buffer;//buffer to read lines of file strs
+    char * fstr;//Face STRing
+    char * vstr;//Value STRing
+    std::vector<glm::vec3> vertices;
 
-std::vector<GLfloat> sample={
-   -1.0f, -1.0f, 0.0f,
-   1.0f, -1.0f, 0.0f,
-   0.0f,  1.0f, 0.0f,
-};
+    size_t len = 0;//file shit
+    ssize_t read;//file shit
+
+    while ((read = getline(&buffer, &len, obj)) != -1) {
+        if(buffer[0]=='v' && buffer[1]==' '){
+            char* shit [3];
+            strsep(&buffer, " ");
+            shit[0]=strsep(&buffer, " ");
+            shit[1]=strsep(&buffer, " ");
+            shit[2]=strsep(&buffer, " ");
+            
+            vertices.push_back(glm::vec3(
+            strtof(shit[0],0x0),   //try to change to float later
+            strtof(shit[1],0x0),
+            strtof(shit[2],0x0)
+            ));//w is just 1
+            continue;
+        }
+        if(buffer[0]=='v' && buffer[1]=='t'){
+            char* shit [2];
+            strsep(&buffer, " ");
+            shit[0]=strsep(&buffer, " ");
+            shit[1]=strsep(&buffer, " ");
+            uvs.push_back(glm::vec2(
+            strtof(shit[0],0x0),   
+            strtof(shit[1],0x0)));
+            continue;
+        }
+        if(buffer[0]=='v' && buffer[1]=='n'){
+            char* shit [3];
+            strsep(&buffer, " ");
+            shit[0]=strsep(&buffer, " ");
+            shit[1]=strsep(&buffer, " ");
+            shit[2]=strsep(&buffer, " ");
+            normals.push_back(glm::vec3(
+            strtof(shit[0],0x0),   
+            strtof(shit[1],0x0),
+            strtof(shit[2],0x0)));
+            continue;
+        }
+        if(buffer[0]=='f' && buffer[1]==' '){
+            //f 2/1/1 3/2/1 4/3/1
+            strsep(&buffer, " ");//remove f letter
+            int shit [3];
+            //int shit2 [3];
+            int m =0;
+            while((fstr = strsep(&buffer, " ")) != 0 ){//iter faces thru spaces. got 2/1/1 in fstr
+                vstr = strsep(&fstr, "/");//got 2 from fstr
+                shit[m]=atoi(vstr);
+                //vstr = strsep(&fstr, "/");//got 1 from fstr
+                //shit2[m]=atoi(vstr);
+                m++;
+            }
+                verticess.push_back(vertices[shit[0]-1]);
+                verticess.push_back(vertices[shit[1]-1]);
+                verticess.push_back(vertices[shit[2]-1]);
+            
+        }//parser works. 
+        
+    }
+    fclose(obj);
+    
+    /*
+        normals.resize(vertices.size(), glm::vec3(0.0, 0.0, 0.0));
+    for (int i = 0; i < elements.size(); i+=3)
+    {
+        GLushort ia = elements[i];
+        GLushort ib = elements[i+1];
+        GLushort ic = elements[i+2];
+        glm::vec3 normal = glm::normalize(glm::cross(
+        glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
+        glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
+        normals[ia] = normals[ib] = normals[ic] = normal;
+    }
+    //code that adds normals. need to port it
+    */
+    
+    return true;
+}
+
+
+
 
 using namespace glm;
 
@@ -112,6 +200,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 
 GLuint programID;
 
+	std::vector< glm::vec3> vertices;
 void platspec_init(){
     glewExperimental=true;
     
@@ -134,9 +223,13 @@ void platspec_init(){
     glfwMakeContextCurrent(win);
     glewExperimental=true; // Needed in core profile
     
-    if(glewInit()!=GLEW_OK){
-        exit(-3);
-    }
+    //if(glewInit()!=GLEW_OK){
+        //exit(-3);
+    //}
+  GLenum glewErr = glewInit();
+  if (glewErr != GLEW_OK && glewErr != GLEW_ERROR_NO_GLX_DISPLAY) {
+exit(-3);
+}
     
     glfwSetInputMode(win, GLFW_STICKY_KEYS, GL_TRUE);
     glGenVertexArrays(1, &VertexArrayID);
@@ -146,22 +239,27 @@ void platspec_init(){
 // The following commands will talk about our 'vertexbuffer' buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 // Give our vertices to OpenGL.
+//glEnable(GL_DEPTH_TEST);
+// Accept fragment if it closer to the camera than the former one
+//glDepthFunc(GL_LESS);
 
 
-
-	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals; // Won't be used at the moment.
-	bool res = loadOBJ("cube.obj", vertices, uvs, normals);
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sample.size()*sizeof(GLfloat), sample.data(), GL_STATIC_DRAW);
-    
+	std::vector< GLushort > elements; // Won't be used at the moment.
+	std::vector< GLushort > uvelements; // Won't be used at the moment.
+
+    bool res = platspec_loadOBJ("cube.obj", vertices, uvs, normals,elements,uvelements);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), &g_vertex_buffer_data, GL_STATIC_DRAW);
+    //glBufferData sends data to shaders right? FINALLY
     programID=LoadShaders("./shad.vsh","./shad.fsh");
 }
 
 void platspec_glclear(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);    // 1st attribute buffer : vertices
-    glUseProgram(programID);
+    
+	glUseProgram(programID);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
@@ -172,10 +270,37 @@ void platspec_glclear(){
    0,                  // stride
    (void*)0            // array buffer offset
     );
+    
+// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+  
+// Or, for an ortho camera :
+//glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
+  
+// Camera matrix
+glm::mat4 View = glm::lookAt(
+    glm::vec3(10,10,10), // Camera is at (0,3,3), in World Space
+    glm::vec3(0,0,0), // and looks at the origin
+    glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
+    );
+  
+// Model matrix : an identity matrix (model will be at the origin)
+glm::mat4 Model = glm::mat4(1.0f);
+// Our ModelViewProjection : multiplication of our 3 matrices
+glm::mat4 mvp = Projection * View * Model; // Remember, matrix multiplication is the other way around
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+  
+	// Send our transformation to the currently bound shader, in the "MVP" uniform
+	// This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
+
+
+
     // Draw the triangle !
-    glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size() * 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
     glDisableVertexAttribArray(0);
+
 }
 
 void platspec_term(){
