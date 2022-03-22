@@ -146,6 +146,14 @@ void platspec_init(){
 // The following commands will talk about our 'vertexbuffer' buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 // Give our vertices to OpenGL.
+
+
+
+	std::vector< glm::vec3 > vertices;
+	std::vector< glm::vec2 > uvs;
+	std::vector< glm::vec3 > normals; // Won't be used at the moment.
+	bool res = loadOBJ("cube.obj", vertices, uvs, normals);
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, sample.size()*sizeof(GLfloat), sample.data(), GL_STATIC_DRAW);
     
     programID=LoadShaders("./shad.vsh","./shad.fsh");
@@ -166,6 +174,7 @@ void platspec_glclear(){
     );
     // Draw the triangle !
     glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+
     glDisableVertexAttribArray(0);
 }
 
