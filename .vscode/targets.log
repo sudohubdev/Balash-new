@@ -1,0 +1,390 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.3
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Sat Mar 26 09:55:38 2022
+
+# Variables
+
+# environment
+GDK_BACKEND = x11
+# environment
+LC_ALL = C
+# environment
+NO_AT_BRIDGE = 1
+# environment
+GTK_RC_FILES = /etc/gtk/gtkrc:/home/denis/.gtkrc:/home/denis/.config/gtkrc
+# environment
+SNAP_INSTANCE_KEY = 
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-898f9d19-256d-44b0-9fb9-b1914a16b95c.sock
+# environment
+LC_NAME = uk_UA.UTF-8
+# environment
+LC_NUMERIC = uk_UA.UTF-8
+# environment
+VSCODE_CWD = /home/denis
+# environment
+LC_ADDRESS = uk_UA.UTF-8
+# default
+MAKE_COMMAND := make
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# environment
+GDK_DPI_SCALE = 1
+# environment
+SNAP_INSTANCE_NAME = code
+# environment
+GDK_PIXBUF_MODULEDIR = /snap/code/91/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+# environment
+KWIN_DRM_PREFER_COLOR_DEPTH = 24
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /home/denis/Стільниця/Balash-new
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+MAIL = /var/spool/mail/denis
+# environment
+XDG_DATA_DIRS = /home/denis/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+VSCODE_LOG_STACK = false
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_CODE_CACHE_PATH = /home/denis/.config/Code/CachedData/c722ca6c7eed3d7987c0d5c3df5c45f6b15e77d1
+# environment
+XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session0
+# environment
+LE_WORKING_DIR = /home/denis/.acme.sh
+# environment
+LANG = C
+# environment
+XAUTHORITY = /run/user/1000/xauth_SuOBAM
+# default
+.LOADED := 
+# default
+.INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+# makefile
+MAKEFLAGS = pqrR
+# environment
+PLASMA_USE_QT_SCALING = 1
+# makefile
+CURDIR := /home/denis/Стільниця/Balash-new
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
+# environment
+MFLAGS = -pqrR
+# default
+.SHELLFLAGS := -c
+# environment
+QT_LINUX_ACCESSIBILITY_ALWAYS_ON = 1
+# environment
+WAYLAND_DISPLAY = wayland-0
+# environment
+XDG_CONFIG_DIRS = /home/denis/.config/kdedefaults:/etc/xdg
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# environment
+XCURSOR_THEME = breeze_cursors
+# environment
+XDG_SESSION_DESKTOP = KDE
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST := Makefile
+# environment
+SNAP_REEXEC = 
+# automatic
+@F = $(notdir $@)
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+VSCODE_PID = 4376
+# environment
+XDG_SESSION_TYPE = wayland
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# environment
+BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
+# environment
+SESSION_MANAGER = local/linux:@/tmp/.ICE-unix/962,unix/linux:/tmp/.ICE-unix/962
+# automatic
+*F = $(notdir $*)
+# makefile (from 'Makefile', line 4)
+cppsrc := linux.cpp main.cpp misc.cpp
+# environment
+CHROME_DESKTOP = code-url-handler.desktop
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# environment
+VSCODE_NLS_CONFIG = {"locale":"uk","availableLanguages":{},"_languagePackSupport":true}
+# environment
+XKB_DEFAULT_OPTIONS = grp:alt_shift_toggle
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# makefile
+SHELL = /bin/sh
+# default
+MAKECMDGOALS := all
+# environment
+PLATFORMIO_CALLER = vscode
+# environment
+DOTNET_BUNDLE_EXTRACT_BASE_DIR = /home/denis/.cache/dotnet_bundle_extract
+# environment
+SHLVL = 1
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+SNAP_COOKIE = xTuowgsPkysPh0ufFf1zPBXELSnxRvuYfyePb7oMj61d-51yfmJ_
+# environment
+PATH = /home/denis/.local/bin:/home/denis/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/home/denis/.dotnet/tools:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin:/usr/lib/jvm/default/bin
+# default
+MAKEFILES := 
+# environment
+LANGUAGE = 
+# environment
+LC_MONETARY = uk_UA.UTF-8
+# environment
+MOTD_SHOWN = pam
+# automatic
+^F = $(notdir $^)
+# environment
+SNAP_USER_COMMON = /home/denis/snap/code/common
+# environment
+LC_TIME = uk_UA.UTF-8
+# environment
+SNAP = /snap/code/91
+# environment
+SNAP_REVISION = 91
+# environment
+SNAP_REAL_HOME = /home/denis
+# environment
+VSCODE_LOG_NATIVE = false
+# environment
+LC_TELEPHONE = uk_UA.UTF-8
+# environment
+GDK_SCALE = 1
+# automatic
+?F = $(notdir $?)
+# environment
+KDE_APPLICATIONS_AS_SCOPE = 1
+# environment
+XDG_SEAT = seat0
+# environment
+NO_PROXY = 127.0.0.1
+# environment
+XDG_CURRENT_DESKTOP = KDE
+# environment
+LS_COLORS = 
+# automatic
++F = $(notdir $+)
+# environment
+XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
+# environment
+DESKTOP_SESSION = plasmawayland
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = KDE
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+LOGNAME = denis
+# makefile (from 'Makefile', line 6)
+cppo := linux.o main.o misc.o
+# environment
+PLATFORMIO_PATH = /home/denis/.platformio/penv/bin:/home/denis/.platformio/penv:/home/denis/.platformio/python3/bin:/home/denis/.local/bin:/home/denis/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/home/denis/.dotnet/tools:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin:/usr/lib/jvm/default/bin
+# environment
+SNAP_ARCH = amd64
+# environment
+XDG_VTNR = 2
+# makefile
+.DEFAULT_GOAL := all
+# environment
+SYSTEMD_EXEC_PID = 877
+# environment
+DISPLAY = :1
+# environment
+USER = denis
+# default
+MAKE_VERSION := 4.3
+# environment
+KDE_SESSION_UID = 1000
+# environment
+DISABLE_WAYLAND = 1
+# environment
+SNAP_DATA = /var/snap/code/91
+# environment
+SNAP_CONTEXT = xTuowgsPkysPh0ufFf1zPBXELSnxRvuYfyePb7oMj61d-51yfmJ_
+# environment
+QT_WAYLAND_FORCE_DPI = 96
+# environment
+LC_MEASUREMENT = uk_UA.UTF-8
+# environment
+XKB_DEFAULT_LAYOUT = us,ua
+# environment
+_ = /usr/bin/make
+# environment
+LC_PAPER = uk_UA.UTF-8
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# environment
+GDK_PIXBUF_MODULE_FILE = /home/denis/snap/code/common/.cache/gdk-pixbuf-loaders.cache
+# environment
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+PLATFORMIO_IDE = 2.4.3
+# environment
+GTK2_RC_FILES = /etc/gtk-2.0/gtkrc:/home/denis/.gtkrc-2.0:/home/denis/.config/gtkrc-2.0
+# environment
+HOME = /home/denis
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+VSCODE_IPC_HOOK = /run/user/1000/vscode-5e0b0481-1.65.2-main.sock
+# environment
+SNAP_NAME = code
+# environment
+GSETTINGS_SCHEMA_DIR = /snap/code/91/usr/share/glib-2.0/schemas
+# environment
+XDG_SESSION_ID = 1
+# environment
+XCURSOR_SIZE = 24
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# environment
+SNAP_VERSION = c722ca6c
+# default
+SUFFIXES := 
+# environment
+QT_AUTO_SCREEN_SCALE_FACTOR = 0
+# environment
+VSCODE_CLI = 1
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+SNAP_COMMON = /var/snap/code/common
+# makefile (from 'Makefile', line 10)
+CXXFLAGS = -O0 -g
+ 
+# environment
+KDE_SESSION_VERSION = 5
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink guile load
+# makefile (from 'Makefile', line 8)
+linkflags = -lglfw $(shell pkg-config --libs glew libpng16)
+# environment
+KDE_FULL_SESSION = true
+# environment
+SNAP_USER_DATA = /home/denis/snap/code/91
+# environment
+DOTNET_ROOT = /usr/share/dotnet
+# environment
+LC_IDENTIFICATION = uk_UA.UTF-8
+# environment
+SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
+# variable set hash-table stats:
+# Load=146/1024=14%, Rehash=0, Collisions=6/178=3%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 2049, inode 27007937): 19 files, no impossibilities.
+
+# 19 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+balash: linux.o main.o misc.o
+#  Implicit rule search has not been done.
+#  Last modified 2022-03-26 09:52:21.765857528
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 15):
+	$(CXX) $(cppo) -o $@ $(linkflags) 
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-03-26 09:52:17.805710823
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+misc.o:
+#  Implicit rule search has been done.
+#  Last modified 2022-03-22 09:40:07.446659742
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+all: balash
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+linux.o:
+#  Implicit rule search has been done.
+#  Last modified 2022-03-26 09:51:34.794114837
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+main.o:
+#  Implicit rule search has been done.
+#  Last modified 2022-03-18 13:47:18.981728144
+#  File has been updated.
+#  Successfully updated.
+
+# files hash-table stats:
+# Load=8/1024=1%, Rehash=0, Collisions=0/24=0%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 24 / storage = 221 B / avg = 9 B
+# current buf: size = 8162 B / used = 221 B / count = 24 / avg = 9 B
+
+# strcache performance: lookups = 36 / hit rate = 33%
+# hash-table stats:
+# Load=24/8192=0%, Rehash=0, Collisions=0/36=0%
+# Finished Make data base on Sat Mar 26 09:55:38 2022
+
+ 

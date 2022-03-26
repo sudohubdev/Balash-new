@@ -5,7 +5,7 @@ cppsrc := $(wildcard *.cpp)
 
 cppo := $(cppsrc:%.cpp=%.o)
 
-linkflags=-lglfw $(shell pkg-config --libs glew)
+linkflags=-lglfw $(shell pkg-config --libs glew libpng16)
 
 CXXFLAGS=-O0 -g
 

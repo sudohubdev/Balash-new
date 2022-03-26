@@ -12,13 +12,106 @@
 #include <assert.h>
 #include <png.h>
 using namespace std;
-bool platspec_loadOBJ(const char * filename,vector<glm::vec3> &verticess,vector<glm::vec2> &uvs, vector<glm::vec3> &normals, vector<GLushort> &elements,vector<GLushort> &uvelements){
+
+GLuint platspec_loadpng(const char * filename){
+    unsigned int width,height;
+    png_byte color_type;
+    png_byte bit_depth;
+    png_structp png_ptr;
+    png_infop info_ptr;
+    png_bytep*row_pointers;
+
+    char header[8]; // 8 is the maximum size that can be checked
+
+    /* open file and test for it being a png */
+    FILE *fp = fopen(filename, "rb");
+    if (!fp)perror("[read_png_file] File %s could not be opened for reading");
+    fread(header, 1, 8, fp);
+    if (png_sig_cmp((png_const_bytep)header, 0, 8))perror("[read_png_file] File %s is not recognized as a PNG file");
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png_ptr)perror("[read_png_file] png_create_read_struct failed");
+    info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)perror("[read_png_file] png_create_info_struct failed");
+    if (setjmp(png_jmpbuf(png_ptr)))perror("[read_png_file] Error during init_io");
+
+    png_init_io(png_ptr, fp);
+    png_set_sig_bytes(png_ptr, 8);
+    png_read_info(png_ptr, info_ptr);
+
+    width = png_get_image_width(png_ptr, info_ptr);
+    height = png_get_image_height(png_ptr, info_ptr);
+    color_type = png_get_color_type(png_ptr, info_ptr);
+    bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+
+    /* Read any color_type into 8bit depth, RGBA format. */
+    if (bit_depth == 16)
+        png_set_strip_16(png_ptr);
+    if (color_type == PNG_COLOR_TYPE_PALETTE)
+        png_set_palette_to_rgb(png_ptr);
+    /* PNG_COLOR_TYPE_GRAY_ALPHA is always 8 or 16bit depth. */
+    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+        png_set_expand_gray_1_2_4_to_8(png_ptr);
+    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+        png_set_tRNS_to_alpha(png_ptr);
+    /* These color_type don't have an alpha channel then fill it with 0xff. */
+    if (color_type == PNG_COLOR_TYPE_RGB ||
+        color_type == PNG_COLOR_TYPE_GRAY ||
+        color_type == PNG_COLOR_TYPE_PALETTE)
+        png_set_filler(png_ptr, 0xFF, PNG_FILLER_AFTER);
+    if (color_type == PNG_COLOR_TYPE_GRAY ||
+        color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+        png_set_gray_to_rgb(png_ptr);
+    png_read_update_info(png_ptr, info_ptr);
+
+    row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
+    for (unsigned int y = 0; y < height; y++)
+    {
+        row_pointers[y] = (png_bytep )malloc(png_get_rowbytes(png_ptr, info_ptr));
+    }
+    png_read_image(png_ptr, (png_bytep*)row_pointers);
+    fclose(fp);
+
+
+    size_t imgbytes = width*height;
+    glm::vec3 * buffer = new glm::vec3[imgbytes];//our buffer for img
+    for (unsigned int y = 0; y <height; y++){
+        for (unsigned int x = 0; x < width; x++){
+            unsigned char *ptr = (unsigned char *)(&row_pointers[y][x]);
+            size_t offset=x+y*width;
+            buffer[offset]= glm::vec3(1,0,1);//glm::vec4((float)ptr[0]/255.0f,(float)ptr[1]/255.0f,(float)ptr[2]/255.0f,(float)ptr[3]/255.0f);
+        }
+    }
+    // Create one OpenGL texture
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+
+    // "Bind" the newly created texture : all future texture functions will modify this texture
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, buffer);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    delete buffer;//delete buffer;
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    for (unsigned int y = 0; y < height; y++)
+    {
+        free(row_pointers[y]);
+    }
+    free(row_pointers);
+    png_free(png_ptr,NULL);
+    return textureID;
+}
+
+
+
+bool platspec_loadOBJ(const char * filename,vector<glm::vec3> &verticess,vector<glm::vec2> &uvs, vector<glm::vec3> &normals){
     FILE * obj = fopen(filename,"r");
     char * buffer;//buffer to read lines of file strs
     char * fstr;//Face STRing
     char * vstr;//Value STRing
     std::vector<glm::vec3> vertices;
-
+    std::vector<glm::vec2> uv;
     size_t len = 0;//file shit
     ssize_t read;//file shit
 
@@ -42,7 +135,7 @@ bool platspec_loadOBJ(const char * filename,vector<glm::vec3> &verticess,vector<
             strsep(&buffer, " ");
             shit[0]=strsep(&buffer, " ");
             shit[1]=strsep(&buffer, " ");
-            uvs.push_back(glm::vec2(
+            uv.push_back(glm::vec2(
             strtof(shit[0],0x0),   
             strtof(shit[1],0x0)));
             continue;
@@ -63,39 +156,26 @@ bool platspec_loadOBJ(const char * filename,vector<glm::vec3> &verticess,vector<
             //f 2/1/1 3/2/1 4/3/1
             strsep(&buffer, " ");//remove f letter
             int shit [3];
-            //int shit2 [3];
+            int shit2 [3];
             int m =0;
             while((fstr = strsep(&buffer, " ")) != 0 ){//iter faces thru spaces. got 2/1/1 in fstr
                 vstr = strsep(&fstr, "/");//got 2 from fstr
                 shit[m]=atoi(vstr);
-                //vstr = strsep(&fstr, "/");//got 1 from fstr
-                //shit2[m]=atoi(vstr);
+                vstr = strsep(&fstr, "/");//got 1 from fstr
+                shit2[m]=atoi(vstr);
                 m++;
             }
                 verticess.push_back(vertices[shit[0]-1]);
                 verticess.push_back(vertices[shit[1]-1]);
                 verticess.push_back(vertices[shit[2]-1]);
+
+                uvs.push_back(uv[shit2[0]-1]);
+                uvs.push_back(uv[shit2[0]-1]);
+                uvs.push_back(uv[shit2[0]-1]);
             
         }//parser works. 
-        
     }
-    fclose(obj);
-    
-    /*
-        normals.resize(vertices.size(), glm::vec3(0.0, 0.0, 0.0));
-    for (int i = 0; i < elements.size(); i+=3)
-    {
-        GLushort ia = elements[i];
-        GLushort ib = elements[i+1];
-        GLushort ic = elements[i+2];
-        glm::vec3 normal = glm::normalize(glm::cross(
-        glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
-        glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
-        normals[ia] = normals[ib] = normals[ic] = normal;
-    }
-    //code that adds normals. need to port it
-    */
-    
+    fclose(obj); 
     return true;
 }
 
@@ -110,6 +190,7 @@ int resx=640,resy=480;
 
 GLuint VertexArrayID;
 GLuint vertexbuffer;
+GLuint uvbuffer;
 //tsk i need to take a baf brb 
 //but where to take that shaders? GLSL? 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
@@ -197,7 +278,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 
 	return ProgramID;
 }
-
+GLuint textureID;
 GLuint programID;
 
 	std::vector< glm::vec3> vertices;
@@ -232,33 +313,46 @@ exit(-3);
 }
     
     glfwSetInputMode(win, GLFW_STICKY_KEYS, GL_TRUE);
+
+    //making buffers
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
-    
     glGenBuffers(1, &vertexbuffer);
-// The following commands will talk about our 'vertexbuffer' buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-// Give our vertices to OpenGL.
-//glEnable(GL_DEPTH_TEST);
-// Accept fragment if it closer to the camera than the former one
-//glDepthFunc(GL_LESS);
+ 
+    glActiveTexture(GL_TEXTURE);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glDepthFunc(GL_LESS);
+    // Accept fragment if it closer to the camera than the former one
 
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals; // Won't be used at the moment.
-	std::vector< GLushort > elements; // Won't be used at the moment.
-	std::vector< GLushort > uvelements; // Won't be used at the moment.
 
-    bool res = platspec_loadOBJ("cube.obj", vertices, uvs, normals,elements,uvelements);
+    bool res = platspec_loadOBJ("cube.obj", vertices, uvs, normals);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), &g_vertex_buffer_data, GL_STATIC_DRAW);
-    //glBufferData sends data to shaders right? FINALLY
+
+    //UV THERE
+    glGenBuffers(1, &uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, uvs.size()*sizeof(glm::vec2), uvs.data(), GL_STATIC_DRAW);
+
+
+
+    // Create one OpenGL texture
+    textureID=platspec_loadpng("test.png");
+    glGenTextures(1, &textureID);
+    // "Bind" the newly created texture : all future texture functions will modify this texture
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+
     programID=LoadShaders("./shad.vsh","./shad.fsh");
 }
 
 void platspec_glclear(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);    // 1st attribute buffer : vertices
-    
+    glClearColor(1.0, 1.0, 1.0, 1.0);
 	glUseProgram(programID);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -271,6 +365,26 @@ void platspec_glclear(){
    (void*)0            // array buffer offset
     );
     
+    // 2nd attribute buffer : uv
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glVertexAttribPointer(
+        1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+        2,                                // size TODO:
+        GL_FLOAT,                         // type
+        GL_FALSE,                         // normalized?
+        0,                                // stride
+        (void*)0                          // array buffer offset
+    );
+
+
+
+
+
+
+
+
+
 // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
   
@@ -297,6 +411,11 @@ glm::mat4 mvp = Projection * View * Model; // Remember, matrix multiplication is
 
 
     // Draw the triangle !
+    glActiveTexture(GL_TEXTURE0);      // Hey OpenGL, we're about to give commands for texture sampler 0.
+glBindTexture(GL_TEXTURE_2D, textureID); // when the currently-active sampler samples from a 2D texture, this is the texture to use.
+glEnable(GL_TEXTURE_2D);           // the currently-active sampler should actually use the bound 2D texture.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glDrawArrays(GL_TRIANGLES, 0, vertices.size() * 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
     glDisableVertexAttribArray(0);
