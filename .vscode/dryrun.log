@@ -1,5 +1,8 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/denis/Стільниця/Balash-new'
-make: Nothing to be done for 'all'.
+g++ -O0 -g   -c -o linux.o linux.cpp
+g++ -O0 -g   -c -o main.o main.cpp
+g++ -O0 -g   -c -o misc.o misc.cpp
+g++ linux.o main.o misc.o -o balash -lglfw -lGLEW -lGL -lX11 -lGLU -lOpenGL -lpng16 -lz  
 make: Leaving directory '/home/denis/Стільниця/Balash-new'
  
