@@ -27,6 +27,28 @@
             ],
             "preLaunchTask": "Make Project",
             "miDebuggerPath": "/usr/bin/gdb"
-        }
+        },
+        {
+            "name": "(gdb) Windows Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/balash.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "avoidWindowsConsoleRedirection": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "MinGW Make Project"
+        },
     ]
 }
