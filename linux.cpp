@@ -1,6 +1,14 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <libpng16/png.h>
+#else
 #include <GL/gl.h>
+#include <GL/glu.h>
+#include <png.h>
+#endif
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <unistd.h>
@@ -10,7 +18,6 @@
 #include <sstream>
 #include <cstring>
 #include <assert.h>
-#include <png.h>
 using namespace std;
 
 GLuint platspec_loadpng(const char * filename){
@@ -98,6 +105,7 @@ GLuint platspec_loadpng(const char * filename){
 bool platspec_loadOBJ(const char * filename,vector<glm::vec3> &vertices,vector<glm::vec2> &uvs, vector<glm::vec3> &normals){
     FILE * obj = fopen(filename,"r");
     char * buffer;//buffer to read lines of file strs
+    buffer = (char*)malloc(10000);
     char * fstr;//Face STRing
     char * vstr;//Value STRing
     std::vector<glm::vec3> vertice;
@@ -275,7 +283,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 GLuint textureIDblyat;
 GLuint programID;
 
-	std::vector< glm::vec3> vertices;
+static std::vector< glm::vec3> vertices;
 void platspec_init(){
     glewExperimental=true;
     
