@@ -8,9 +8,12 @@ LIBS = -O0
 ifeq ($(OS),Windows_NT)
 	LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
 else
-    LIBS = LIBS=`pkg-config --libs --cflags glew libpng16` -lpng16 -lglfw -lglew -lglib-2.0.0 `if [[ $OSTYPE == 'darwin'* ]]; then echo '-framework OpenGL'; fi`
+    LIBS = -lpng16 -lglfw -lglew -framework OpenGL
 endif
 
+ifeq ($(OS),Linux)
+	LIBS = LIBS=`pkg-config --libs --cflags glew libpng16`
+endif
 
 HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp)
 CPPFLAGS= $(OPTIMIZE) -Wall $(LIBS)#remove -g when release
@@ -35,6 +38,7 @@ macos:
 	sudo ln -sf /opt/homebrew/Cellar/glfw/*/lib/libglfw.dylib /usr/local/lib/libglfw.dylib
 	sudo ln -sf /opt/homebrew/Cellar/glm/*/lib/libglm.dylib /usr/local/lib/libglm.dylib
 	sudo ln -sf /opt/homebrew/Cellar/libpng/*/lib/libpng16.dylib /usr/local/lib/libpng16.dylib
+	sudo ln -sf /opt/homebrew/Cellar/freeglut/*/lib/libglut.dylib /usr/local/lib/libglut.dylib
 	sudo ln -sf /opt/homebrew/lib/libglib-2.0.0.dylib /usr/local/lib/libglib-2.0.0.dylib
 all:$(BUILDDIR)/$(ELFNAME) Makefile 
 
@@ -43,6 +47,15 @@ getexec:#later for bloatstudio
 
 domestos:#really. added domestos XD
 	rm -f $(OBJS) $(ASMOBJS)
+
+newproject:
+	rm -f *.obj 
+	rm -f *.png 
+	rm -f *.cpp 
+	rm -f *.hpp 
+	rm -f *.o 
+	rm -f *.vsh 
+	rm -f *.fsh
 
 mrproper:
 	rm -rf $(BUILDDIR)
