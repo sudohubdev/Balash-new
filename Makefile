@@ -18,7 +18,7 @@ CPPFLAGS= $(OPTIMIZE) -Wall $(LIBS)#remove -g when release
 SOURCE:=$(wildcard *.cpp)
 OBJS:=$(SOURCE:.cpp=.o) 
 
-default:$(HEADERS) all run 
+default:$(HEADERS) mkdir build; all run 
 
 run:
 	./$(BUILDDIR)/$(ELFNAME)
