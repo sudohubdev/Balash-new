@@ -21,9 +21,12 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "MinGW Make Project",
-            "type": "shell",
-            "command": "cd ${workspaceFolder};mingw32-make all",
+            "label": "Make MSYS",
+            "type": "process",
+            "command": "C:\\msys64\\usr\\bin\\bash.exe",
+            "args": [
+                "msys2compile.sh"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true

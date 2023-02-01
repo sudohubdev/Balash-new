@@ -40,7 +40,8 @@
             "externalConsole": true,
             "avoidWindowsConsoleRedirection": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe"
+            "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
+            "preLaunchTask": "Make MSYS"
         },
         {
             "name": "g++ - Build (macOS)",
