@@ -12,17 +12,20 @@ make macos
 make
 ```
 ## For Windows users:
-### Download MinGW and VS Code
+### Download MSYS2 and VS Code
 
-https://www.mingw-w64.org
+https://www.msys2.org
+
 https://code.visualstudio.com
 
-### Then run commands in terminal(MSYS2 MinGW64 blue icon in start menu):
+### Then run commands in terminal(__MSYS2 MinGW64 blue icon in start menu__):
 ```bash
 # open it with C:\msys64\mingw64.exe!!!  not cmd.exe
+pacman -S git
+pacman -S mingw-w64-x86_64-gcc
 git clone https://github.com/g0vnocoders/balash-new
 cd balash-new
-makepkg -sCLF
+makepkg -sCL
 make
 ```
 
@@ -41,3 +44,8 @@ git clone https://github.com/g0vnocoders/balash-new
 cd balash-new
 make
 ```
+
+
+
+#To make a new project(delete all cpp files):
+make newproject
