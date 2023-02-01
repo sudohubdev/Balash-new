@@ -3,7 +3,15 @@ OPTIMIZE=-O0 -g #fast -msse4 -mfpmath=sse -march=native -mpopcnt -mbmi2  -fno-pi
 ELFNAME=balash
 
 CXX=g++
-LIBS=`pkg-config --libs --cflags glew libpng16` -lpng16 -lglfw -lglew -lglib-2.0.0 -framework OpenGL
+LIBS= -lpng16 -lglfw3 -lglew32 -lpng -DBUILD_SHARED_LIBS=ON -LC:\MinGW\lib -lglu32 -lopengl32 -lgdi32 -luser32 -lkernel32 -lglew32s
+
+ifeq ($(OS),Windows_NT)
+	LIBS = -lHELL0
+else
+    LIBS += `if [[ $OSTYPE == 'darwin'* ]]; then echo '-framework OpenGL'; fi`
+endif
+
+
 HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp)
 CPPFLAGS= $(OPTIMIZE) -Wall $(LIBS)#remove -g when release
 

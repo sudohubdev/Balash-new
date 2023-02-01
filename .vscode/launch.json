@@ -29,7 +29,7 @@
             "miDebuggerPath": "/usr/bin/gdb"
         },
         {
-            "name": "(gdb) Windows Launch",
+            "name": "g++ - Build (Windows)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/balash.exe",
@@ -40,8 +40,7 @@
             "externalConsole": true,
             "avoidWindowsConsoleRedirection": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
-            "preLaunchTask": "MinGW Make Project"
+            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe"
         },
         {
             "name": "g++ - Build (macOS)",

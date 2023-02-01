@@ -1,0 +1,29 @@
+pkgname=('libpng16')
+pkgver=1
+pkgrel=1
+
+pkgdesc="Building libs required for mingw Balash"
+arch=('any')
+url="https://github.com/g0vnocoders/balash-new"
+license=('MIT')
+
+
+makedepends=('make'
+        'mingw-w64-x86_64-gcc'
+        'git'
+        'wget'
+        'mingw-w64-x86_64-glfw'
+        'mingw-w64-x86_64-glew'
+        'mingw-w64-x86_64-glm'
+        )
+
+source=("https://sourceforge.net/projects/libpng/files/libpng16/1.6.39/libpng-1.6.39.tar.gz/download")
+
+sha256sums=('af4fb7f260f839919e5958e5ab01a275d4fe436d45442a36ee62f73e5beb75ba')
+build(){
+    cd libpng-1.6.39
+    ./configure --prefix=$PREFIX --enable-shared --enable-static
+    make
+    make install
+    cd ..
+}
