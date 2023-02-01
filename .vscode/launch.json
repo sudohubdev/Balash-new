@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++ - Build and debug active files",
+            "name": "g++ - Build (Linux)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/balash",
@@ -41,6 +41,22 @@
             "avoidWindowsConsoleRedirection": false,
             "MIMode": "gdb",
             "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
+            "preLaunchTask": "MinGW Make Project"
+        },
+        {
+            "name": "g++ - Build (macOS)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/balash",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "sourceFileMap": {
+                "${workspaceFolder}/balash": "main.cpp",
+            },
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -48,7 +64,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "MinGW Make Project"
+            "preLaunchTask": "Make Project"
         },
     ]
 }
