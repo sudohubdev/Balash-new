@@ -28,6 +28,8 @@ protected:
     int resy = 768;
     GLuint VertexArrayID;
     GLuint programID;
+    chrono::high_resolution_clock::time_point lastTime;
+    std::vector<float> fps_avg;
 };
 
 class Camera

@@ -59,7 +59,32 @@ void Renderer::Clear()
     glfwSwapBuffers(win);
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    // get FPS
+    double diff = chrono::duration_cast<chrono::duration<double>>(chrono::high_resolution_clock::now() - lastTime).count();
+    lastTime = chrono::high_resolution_clock::now();
+    fps_avg.push_back(1 / diff);
+    // remove old values
+    if (fps_avg.size() > 20)
+        fps_avg.erase(fps_avg.begin());
+
+    vector sorted = fps_avg;
+    std::sort(sorted.begin(), sorted.end());
+    int size = sorted.size();
+    double median = (size % 2 != 0) ? (double)sorted[size / 2] : ((double)sorted[size / 2] + (double)sorted[size / 2 - 1]) / 2;
+
+    // used vram
+    int vram = 0;
+    int total = 0;
+    glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &vram);
+    glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &total);
+    vram /= 1024;
+    total /= 1024;
+    vram = total - vram;
+    // set title
+    string title = "BalashEngine  |  FPS: " + to_string(median) + "  |  VRAM Used(TOTAL): " + to_string(vram) + "MB/" + to_string(total) + "MB";
+    glfwSetWindowTitle(win, title.c_str());
 }
 void Renderer::Render(Scene *scene, Camera *camera)
 {
@@ -74,31 +99,14 @@ void Renderer::Render(Scene *scene, Camera *camera)
         // mesh->bindBuffers();
         glUseProgram(programID);
 
+        camera->updateProjection();
+        camera->updateView();
         // the multiplication order is important
-        glm::mat4 View = glm::lookAt(
-            glm::vec3(3, 4, 6), // Camera is at (0,3,3), in World Space
-            glm::vec3(0, 0, 0), // and looks at the origin
-            glm::vec3(0, 5, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-        );
+        glm::mat4 MVP = camera->getProjection() * camera->getView() * mesh->getModelMatrix();
 
-        // view is buggy
-        glm::mat4 MVP = camera->getProjection() * View * mesh->getModelMatrix();
-        //
-
-        GLuint vertexbuffer;
-        GLuint uvbuffer;
-
-        mesh->genBuffers();
         mesh->bindBuffers();
-        GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+        mesh->setMVP(this->programID, MVP);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh->getTexture()->getTextureID());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        glEnable(GL_TEXTURE_2D);
         glDrawArrays(GL_TRIANGLES, 0, mesh->getGeometry()->vertices.size());
         cout << "Drawn" << mesh->getGeometry()->vertices.size() << "vertices" << endl;
         mesh->unbindBuffers();
@@ -182,10 +190,11 @@ Mesh::Mesh(Texture *texture, Geometry *geometry)
 {
     this->texture = texture;
     this->geometry = geometry;
+    this->genBuffers();
 }
 Mesh::Mesh()
 {
-    // this->genBuffers();
+    this->genBuffers();
 }
 Mesh::~Mesh()
 {

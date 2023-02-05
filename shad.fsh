@@ -7,10 +7,7 @@ out vec3 color;
 uniform sampler2D myTextureSampler;
 void main(){
   color = texture( myTextureSampler, UV ).rgb;
-  color.r=1.0;//for debug
+  //color.r=1.0;//for debug
   //color.r=UV.x;//for debug
   //color.g=UV.y;//for debug
-  //uv loads, coords too
-  //but texture sampler is a dick
-  //check linux.cpp
 }

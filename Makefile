@@ -14,13 +14,13 @@ else
 		LIBS = `pkg-config --libs --cflags glew libpng16 glfw3`
 	endif
 endif
-
-LIBS=-fsanitize=address -static-libasan `pkg-config --libs --cflags glew libpng16 glfw3`
+LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
+#LIBS=-fsanitize=address -static-libasan `pkg-config --libs --cflags glew libpng16 glfw3`
 
 HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp) $(wildcard loaders/*.hpp) $(wildcard utils/*.hpp) 
 
 SOURCE:=$(wildcard *.cpp) $(wildcard loaders/*.cpp) $(wildcard utils/*.cpp) 
-OBJS:=$(SOURCE:.cpp=.o) 
+OBJS:=$(SOURCE:.cpp=.o)
 
 default:$(HEADERS) mkdir all run 
 
@@ -47,8 +47,7 @@ getexec:#later for bloatstudio
 	@echo $(BUILDDIR)/$(ELFNAME)
 
 domestos:#really. added domestos XD
-	rm -f $(OBJS) $(ASMOBJS)
-
+	rm -f $(OBJS)
 newproject:
 	rm -f *.obj 
 	rm -f *.png 
