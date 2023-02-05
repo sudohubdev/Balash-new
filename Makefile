@@ -9,16 +9,17 @@ ifeq ($(OS),Windows_NT)
 	LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
 else
     LIBS = -lpng16 -lglfw -lglew -framework OpenGL
+	OPERATING_SYSTEM := $(shell uname -s)
+	ifeq ($(OPERATING_SYSTEM),Linux)
+		LIBS = `pkg-config --libs --cflags glew libpng16 glfw3`
+	endif
 endif
 
-ifeq ($(OS),Linux)
-	LIBS = LIBS=`pkg-config --libs --cflags glew libpng16`
-endif
+LIBS=-fsanitize=address -static-libasan `pkg-config --libs --cflags glew libpng16 glfw3`
 
-HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp)
-CPPFLAGS= $(OPTIMIZE) -Wall $(LIBS)#remove -g when release
+HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp) $(wildcard loaders/*.hpp) $(wildcard utils/*.hpp) 
 
-SOURCE:=$(wildcard *.cpp)
+SOURCE:=$(wildcard *.cpp) $(wildcard loaders/*.cpp) $(wildcard utils/*.cpp) 
 OBJS:=$(SOURCE:.cpp=.o) 
 
 default:$(HEADERS) mkdir all run 
@@ -62,4 +63,4 @@ mrproper:
 	mkdir $(BUILDDIR)
 
 $(BUILDDIR)/$(ELFNAME): $(OBJS)
-	$(CXX) $(OBJS) -o $(BUILDDIR)/$(ELFNAME) $(LIBS)
+	$(CXX) $(OBJS) $(LIBS) $(OPTIMIZE) -o $(BUILDDIR)/$(ELFNAME)
