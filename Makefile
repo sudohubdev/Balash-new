@@ -8,13 +8,14 @@ LIBS = -O0
 ifeq ($(OS),Windows_NT)
 	LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
 else
-    LIBS = -lpng16 -lglfw -lglew -framework OpenGL
+    LIBS = -lpng16 -lglfw -lglew -framework OpenGL --std=c++17
+	CXX+=-std=c++17
 	OPERATING_SYSTEM := $(shell uname -s)
 	ifeq ($(OPERATING_SYSTEM),Linux)
 		LIBS = `pkg-config --libs --cflags glew libpng16 glfw3`
 	endif
 endif
-LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
+#LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
 #LIBS=-fsanitize=address -static-libasan `pkg-config --libs --cflags glew libpng16 glfw3`
 
 HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp) $(wildcard loaders/*.hpp) $(wildcard utils/*.hpp) 
