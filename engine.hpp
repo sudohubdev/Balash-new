@@ -18,7 +18,7 @@ class Renderer
 public:
     Renderer();
     ~Renderer();
-    void Clear();
+    double Clear();
     void Render(Scene *scene, Camera *camera);
     bool shouldClose();
     GLFWwindow *getWindow();
@@ -88,7 +88,9 @@ public:
     glm::vec3 position{0, 0, 0};
     glm::vec3 rotation{0, 0, 0};
     glm::vec3 scale{1, 1, 1};
-
+    // moves mesh relative to its current position.
+    // unlike position+=direction, this will move the mesh in the direction it is looking at
+    void moveRelative(glm::vec3 move);
     glm::mat4 getModelMatrix();
 
 protected:

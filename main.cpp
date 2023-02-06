@@ -7,6 +7,8 @@ int main()
 {
     // load
     Renderer renderer = Renderer();
+    // disable vsync
+    // glfwSwapInterval(0);
     Camera camera = Camera(75.0f, 1.0f, 0.1f, 100.0f);
     camera.position = glm::vec3(3, 4, 6);
     camera.lootAt(glm::vec3(0, 0, 0));
@@ -24,19 +26,24 @@ int main()
     Mesh *mesh3 = new Mesh(texture2, geometry2);
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
-    scene.addMesh(mesh3);
-    mesh2->position = glm::vec3(-3, 0, 1);
+    // scene.addMesh(mesh3);
+    mesh2->position = glm::vec3(0, 0, 0);
     // render
     while (!renderer.shouldClose())
     {
-        double tick = glfwGetTime();
-        // mesh->rotation.y += 0.01f;
-        mesh2->position.x = cos(tick) * 20;
-        mesh2->position.z = sin(tick) * 20;
-        mesh3->position.x = -cos(tick) * 20;
-        mesh3->position.z = -sin(tick) * 20;
+        // clear returns time delta
+        float tick = renderer.Clear() * 100;
+        if (tick != tick || tick > 10 || tick < 0)
+            tick = 0;
+
+        cout << "FPS: " << 1 / tick << endl;
+        // circle move cube around dino
+        mesh2->rotation.y += tick * 0.05f;
+        mesh2->moveRelative(glm::vec3(0, 0, tick * 0.2f));
+        // mesh3->rotation.y += 0.1f;
+
         renderer.Render(&scene, &camera);
-        camera.position += controls.getVelocity() * 0.5f;
+        camera.position += controls.getVelocity() * (0.4f * tick);
         cout << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << endl;
     }
 }

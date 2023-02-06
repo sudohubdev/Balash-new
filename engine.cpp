@@ -53,7 +53,7 @@ Renderer::~Renderer()
     glfwDestroyWindow(win);
     glfwTerminate();
 }
-void Renderer::Clear()
+double Renderer::Clear()
 {
     // Swap buffers to prevent flickering
     glfwSwapBuffers(win);
@@ -85,11 +85,10 @@ void Renderer::Clear()
     // set title
     string title = "BalashEngine  |  FPS: " + to_string(median) + "  |  VRAM Used(TOTAL): " + to_string(vram) + "MB/" + to_string(total) + "MB";
     glfwSetWindowTitle(win, title.c_str());
+    return diff;
 }
 void Renderer::Render(Scene *scene, Camera *camera)
 {
-    // Clear the screen.
-    Clear();
     // Render
     for (Mesh *mesh : scene->meshes)
     {
@@ -297,6 +296,15 @@ void Mesh::setMVP(GLuint shaderID, glm::mat4 MVP)
     GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 }
+void Mesh::moveRelative(glm::vec3 move)
+{
+    glm::mat4 rot = glm::mat3(1.0f);
+    rot = glm::rotate(rot, rotation.x, glm::vec3(1, 0, 0));
+    rot = glm::rotate(rot, rotation.y, glm::vec3(0, 1, 0));
+    rot = glm::rotate(rot, rotation.z, glm::vec3(0, 0, 1));
+    glm::mat3 rot3 = glm::mat3(rot);
+    position += rot3 * move;
+}
 
 glm::mat4 Mesh::getModelMatrix()
 {
@@ -320,7 +328,7 @@ Texture::Texture(const char *path)
     string s = path;
     assert(s.find("png") != string::npos);
     textureID = platspec_loadpng(path);
-    //assert(textureID != 0);
+    // assert(textureID != 0);
 }
 Texture::~Texture()
 {

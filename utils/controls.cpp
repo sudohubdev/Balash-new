@@ -47,18 +47,19 @@ void PointerlockControls::Unlock()
 
 glm::vec3 PointerlockControls::getVelocity()
 {
+    // https://github.com/arduinka55055/threejs-minecraft/blob/master/static/src/lib/controlfirst.js
     this->camera->updateView();
     glm::mat4 rot = this->camera->getView();
-    // Calculate axises
-    glm::vec3 cameraFront = glm::vec3(rot[2][0], rot[2][1], rot[2][2]);
-    glm::vec3 cameraUp = glm::vec3(rot[1][0], rot[1][1], rot[1][2]);
-    glm::vec3 cameraRight = glm::vec3(rot[0][0], rot[0][1], rot[0][2]);
-    // Calculate velocity in global space
-
     glm::vec3 res = glm::vec3(0, 0, 0);
-    res.x = cameraRight.x * velocity.x + cameraFront.x * velocity.z;
-    res.y = velocity.y;
-    res.z = -cameraRight.z * velocity.x - cameraFront.z * velocity.z;
+    // forward
+    glm::vec3 vec = glm::vec3(rot[0][0], rot[1][0], rot[2][0]);
+    vec = glm::cross(vec, glm::vec3(0, 1, 0));
+    res -= vec * velocity.z;
+    // right
+    vec = glm::vec3(rot[0][0], rot[1][0], rot[2][0]);
+    res += vec * velocity.x;
+    // up
+    res.y += velocity.y;
 
     if (res.x != res.x || res.y != res.y || res.z != res.z)
         return glm::vec3(0, 0, 0);
@@ -93,32 +94,36 @@ void PointerlockControls::keyCallback(GLFWwindow *window, int key, int scancode,
         glfwSetWindowShouldClose(window, GL_TRUE);
 
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
-        velocity.z = 1;
-    else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-        velocity.z = 0;
+        velocity.z += 1;
+    if (key == GLFW_KEY_W && action == GLFW_RELEASE)
+        velocity.z -= 1;
 
     if (key == GLFW_KEY_S && action == GLFW_PRESS)
-        velocity.z = -1;
-    else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-        velocity.z = 0;
+        velocity.z -= 1;
+    if (key == GLFW_KEY_S && action == GLFW_RELEASE)
+        velocity.z += 1;
 
     if (key == GLFW_KEY_A && action == GLFW_PRESS)
-        velocity.x = -1;
-    else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-        velocity.x = 0;
+        velocity.x -= 1;
+    if (key == GLFW_KEY_A && action == GLFW_RELEASE)
+        velocity.x += 1;
 
     if (key == GLFW_KEY_D && action == GLFW_PRESS)
-        velocity.x = 1;
-    else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-        velocity.x = 0;
+        velocity.x += 1;
+    if (key == GLFW_KEY_D && action == GLFW_RELEASE)
+        velocity.x -= 1;
 
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-        velocity.y = 1;
-    else if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
-        velocity.y = 0;
+        velocity.y += 1;
+    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+        velocity.y -= 1;
 
     if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
-        velocity.y = -1;
-    else if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
-        velocity.y = 0;
+        velocity.y -= 1;
+    if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
+        velocity.y += 1;
+
+    velocity.x = glm::clamp(velocity.x, -1.0f, 1.0f);
+    velocity.y = glm::clamp(velocity.y, -1.0f, 1.0f);
+    velocity.z = glm::clamp(velocity.z, -1.0f, 1.0f);
 }
