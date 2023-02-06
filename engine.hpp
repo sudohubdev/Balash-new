@@ -21,6 +21,7 @@ public:
     void Clear();
     void Render(Scene *scene, Camera *camera);
     bool shouldClose();
+    GLFWwindow *getWindow();
 
 protected:
     GLFWwindow *win;
@@ -43,8 +44,12 @@ public:
     glm::mat4 getView();
     glm::mat4 getProjection();
     void lootAt(glm::vec3 target);
+    // gets direction of camera to look at
+    glm::vec3 getDirection();
 
+    // camera position
     glm::vec3 position{0, 0, 0};
+    // euler angles (radian)
     glm::vec3 rotation{0, 0, 0};
     float fov{75};
     float aspect{1};

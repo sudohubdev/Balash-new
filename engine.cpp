@@ -93,10 +93,10 @@ void Renderer::Render(Scene *scene, Camera *camera)
     // Render
     for (Mesh *mesh : scene->meshes)
     {
-        cout << "Rendering mesh" << endl;
-        cout << "Mesh has " << mesh->getGeometry()->vertices.size() << "vertices" << endl;
-        cout << "Mesh texture is " << mesh->getTexture()->getTextureID() << endl;
-        // mesh->bindBuffers();
+        // cout << "Rendering mesh" << endl;
+        // cout << "Mesh has " << mesh->getGeometry()->vertices.size() << "vertices" << endl;
+        // cout << "Mesh texture is " << mesh->getTexture()->getTextureID() << endl;
+        //  mesh->bindBuffers();
         glUseProgram(programID);
 
         camera->updateProjection();
@@ -108,13 +108,16 @@ void Renderer::Render(Scene *scene, Camera *camera)
         mesh->setMVP(this->programID, MVP);
 
         glDrawArrays(GL_TRIANGLES, 0, mesh->getGeometry()->vertices.size());
-        cout << "Drawn" << mesh->getGeometry()->vertices.size() << "vertices" << endl;
         mesh->unbindBuffers();
     }
 }
 bool Renderer::shouldClose()
 {
     return glfwWindowShouldClose(win);
+}
+GLFWwindow *Renderer::getWindow()
+{
+    return win;
 }
 
 #pragma endregion
@@ -150,7 +153,7 @@ void Camera::updateView()
 {
     this->View = glm::lookAt(
         this->position,
-        this->position + this->rotation,
+        this->position + this->getDirection(),
         glm::vec3(0, 1, 0) // Head is up (set to 0,-1,0 to look upside-down)
     );
 }
@@ -163,6 +166,14 @@ void Camera::lootAt(glm::vec3 target)
     );
     // update rotation
     this->rotation = glm::normalize(target - this->position);
+}
+glm::vec3 Camera::getDirection()
+{
+    glm::vec3 direction;
+    direction.x = cos(this->rotation.z) * cos(this->rotation.y);
+    direction.y = sin(this->rotation.y);
+    direction.z = sin(this->rotation.z) * cos(this->rotation.y);
+    return glm::normalize(direction);
 }
 Camera::~Camera()
 {
