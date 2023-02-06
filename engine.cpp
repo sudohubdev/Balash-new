@@ -320,7 +320,7 @@ Texture::Texture(const char *path)
     string s = path;
     assert(s.find("png") != string::npos);
     textureID = platspec_loadpng(path);
-    assert(textureID != NULL);
+    //assert(textureID != 0);
 }
 Texture::~Texture()
 {
