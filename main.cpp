@@ -36,7 +36,6 @@ int main()
         if (tick != tick || tick > 10 || tick < 0)
             tick = 0;
 
-        cout << "FPS: " << 1 / tick << endl;
         // circle move cube around dino
         mesh2->rotation.y += tick * 0.05f;
         mesh2->moveRelative(glm::vec3(0, 0, tick * 0.2f));

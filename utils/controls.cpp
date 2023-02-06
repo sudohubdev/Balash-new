@@ -17,9 +17,17 @@ PointerlockControls::PointerlockControls(GLFWwindow *window, Camera *camera)
         PointerlockControls *self = static_cast<PointerlockControls *>(glfwGetWindowUserPointer(window));
         self->mouseCallback(window, xpos, ypos);
     };
+    auto clickCallback = [](GLFWwindow *window, int button, int action, int mods)
+    {
+        PointerlockControls *self = static_cast<PointerlockControls *>(glfwGetWindowUserPointer(window));
+        // self->clickCallback(window, int button, int action, int mods);
+        self->resetDelta();
+        self->Lock();
+    };
 
     glfwSetKeyCallback(window, keyCallback);
     glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetMouseButtonCallback(window, clickCallback);
     if (glfwRawMouseMotionSupported())
     {
         glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -35,14 +43,24 @@ PointerlockControls::~PointerlockControls()
 
 void PointerlockControls::Lock()
 {
+    if (locked)
+        return;
     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     locked = true;
 }
 
 void PointerlockControls::Unlock()
 {
+    if (!locked)
+        return;
     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     locked = false;
+}
+void PointerlockControls::resetDelta()
+{
+    double x, y;
+    glfwGetCursorPos(win, &x, &y);
+    lastMousePos = glm::vec2(x, y);
 }
 
 glm::vec3 PointerlockControls::getVelocity()
@@ -68,8 +86,8 @@ glm::vec3 PointerlockControls::getVelocity()
 
 void PointerlockControls::mouseCallback(GLFWwindow *window, double xpos, double ypos)
 {
-    // if (!locked)
-    // return;
+    if (!locked)
+        return;
     cout << "mouseCallback" << endl;
     glm::vec2 mousePos = glm::vec2(xpos, ypos);
     glm::vec2 mouseDelta = mousePos - lastMousePos;
@@ -91,7 +109,7 @@ void PointerlockControls::mouseCallback(GLFWwindow *window, double xpos, double 
 void PointerlockControls::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
+        this->Unlock();
 
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
         velocity.z += 1;

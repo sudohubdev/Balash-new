@@ -16,6 +16,7 @@ public:
     void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
     void mouseCallback(GLFWwindow *window, double xpos, double ypos);
     // gets velocity of camera
+    void resetDelta();
     glm::vec3 getVelocity();
 
 protected:
