@@ -43,7 +43,7 @@ Renderer::Renderer()
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
-    // Create and compile our GLSL program from the shaders
+    // Create and compile our GLSL program from the shaders (global)
     programID = LoadShaders("./shad.vsh", "./shad.fsh");
 }
 

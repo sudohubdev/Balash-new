@@ -43,6 +43,6 @@ int main()
 
         renderer.Render(&scene, &camera);
         camera.position += controls.getVelocity() * (0.4f * tick);
-        cout << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << endl;
+        // cout << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << endl;
     }
 }
