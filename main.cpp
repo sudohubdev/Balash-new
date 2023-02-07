@@ -1,6 +1,7 @@
 #include "libs.hpp"
 #include "loaders/loaders.hpp"
 #include "utils/controls.hpp"
+#include "utils/skybox.hpp"
 #include "engine.hpp"
 
 int main()
@@ -17,6 +18,15 @@ int main()
     controls.Lock();
 
     Scene scene = Scene();
+
+    // Skybox skybox = Skybox({
+    //     "skybox/right.jpg",
+    //     "skybox/left.jpg",
+    //     "skybox/top.jpg",
+    //     "skybox/bottom.jpg",
+    //     "skybox/front.jpg",
+    //     "skybox/back.jpg",
+    // });
     Texture *texture = new Texture("dino.png");
     Geometry *geometry = new Geometry("dino.obj");
     Texture *texture2 = new Texture("uvtest.png");
@@ -26,7 +36,8 @@ int main()
     Mesh *mesh3 = new Mesh(texture2, geometry2);
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
-    // scene.addMesh(mesh3);
+    // scene.addMesh(&skybox);
+    //  scene.addMesh(mesh3);
     mesh2->position = glm::vec3(0, 0, 0);
     // render
     while (!renderer.shouldClose())

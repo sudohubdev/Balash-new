@@ -8,12 +8,12 @@
             "name": "g++ - Build (Linux)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/balash",
+            "program": "${workspaceFolder}/build/balash",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "sourceFileMap": {
-                "${workspaceFolder}/balash": "main.cpp",
+                "${workspaceFolder}/build/balash": "main.cpp",
             },
             "environment": [],
             "externalConsole": false,
@@ -36,12 +36,25 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
+            "sourceFileMap": {
+                "main.cpp": "${workspaceFolder}/main.cpp",
+            },
             "environment": [],
             "externalConsole": true,
             "avoidWindowsConsoleRedirection": false,
             "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
             "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
-            "preLaunchTask": "Make MSYS"
+            "preLaunchTask": "Make MSYS",
+            "logging": {
+                "engineLogging": true
+            }
         },
         {
             "name": "g++ - Build (macOS)",
@@ -52,7 +65,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "sourceFileMap": {
-                "${workspaceFolder}/balash": "main.cpp",
+                "${workspaceFolder}/build/balash": "main.cpp",
             },
             "environment": [],
             "externalConsole": false,

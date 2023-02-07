@@ -3,13 +3,27 @@
 #include <vector>
 #include <fstream>
 
+#ifndef LOADERS_HPP
+#define LOADERS_HPP
+
 using namespace std;
 
 // loads an .obj file into a vector of vertices, uvs, and normals
 bool loadOBJ(const char *filename, vector<glm::vec3> &vertices, vector<glm::vec2> &uvs, vector<glm::vec3> &normals);
 
+typedef struct
+{
+    unsigned char *data;
+    int width;
+    int height;
+} texturedata;
+
+texturedata loadpng_raw(const char *filename);
+
 // loads a .png file into a texture
-GLuint platspec_loadpng(const char *filename);
+GLuint loadpng(const char *filename);
 
 // loads shaders from files into a program
 GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path);
+
+#endif

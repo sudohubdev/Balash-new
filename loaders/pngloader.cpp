@@ -1,6 +1,6 @@
 #include "loaders.hpp"
 
-GLuint platspec_loadpng(const char *filename)
+texturedata loadpng_raw(const char *filename)
 {
     unsigned int width, height;
     png_byte color_type;
@@ -68,11 +68,28 @@ GLuint platspec_loadpng(const char *filename)
     for (unsigned int y = 0; y < height; y++)
         memcpy(buffer + (rowbytes * y), row_pointers[y], rowbytes);
 
+    texturedata data;
+    data.data = buffer;
+    data.width = width;
+    data.height = height;
+
+    // freeing up memory:
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    for (unsigned int y = 0; y < height; y++)
+        free(row_pointers[y]);
+    free(row_pointers);
+    png_free(png_ptr, NULL);
+    return data;
+}
+
+GLuint loadpng(const char *filename)
+{
+    texturedata data = loadpng_raw(filename);
     // creating texture:
     GLuint textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.width, data.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -81,11 +98,6 @@ GLuint platspec_loadpng(const char *filename)
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // freeing up memory:
-    free(buffer);
-    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-    for (unsigned int y = 0; y < height; y++)
-        free(row_pointers[y]);
-    free(row_pointers);
-    png_free(png_ptr, NULL);
+    free(data.data);
     return textureID;
 }

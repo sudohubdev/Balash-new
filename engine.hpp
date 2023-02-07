@@ -82,6 +82,7 @@ public:
     Geometry *getGeometry();
     void genBuffers();
     void bindBuffers();
+    GLuint getVAO();
     void unbindBuffers();
     void setMVP(GLuint shaderID, glm::mat4 MVP);
     // basic mesh properties
@@ -99,6 +100,7 @@ protected:
     GLuint vertexbuffer;
     GLuint uvbuffer;
     GLuint normalbuffer;
+    GLuint vao;
 };
 
 class Texture
