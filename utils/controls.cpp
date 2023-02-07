@@ -102,7 +102,7 @@ void PointerlockControls::mouseCallback(GLFWwindow *window, double xpos, double 
 {
     if (!locked)
         return;
-    cout << "mouseCallback" << endl;
+    //cout << "mouseCallback" << endl;
     glm::vec2 mousePos = glm::vec2(xpos, ypos);
     glm::vec2 mouseDelta = mousePos - lastMousePos;
     lastMousePos = mousePos;

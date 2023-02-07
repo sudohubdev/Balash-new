@@ -80,11 +80,11 @@ public:
     void setGeometry(Geometry *geometry);
     Texture *getTexture();
     Geometry *getGeometry();
-    void genBuffers();
-    void bindBuffers();
+    virtual void genBuffers();
+    virtual void bindBuffers();
     GLuint getVAO();
-    void unbindBuffers();
-    void setMVP(GLuint shaderID, glm::mat4 MVP);
+    virtual void unbindBuffers();
+    virtual void setMVP(GLuint shaderID, glm::mat4 MVP);
     // basic mesh properties
     glm::vec3 position{0, 0, 0};
     glm::vec3 rotation{0, 0, 0};

@@ -204,7 +204,6 @@ Mesh::Mesh(Texture *texture, Geometry *geometry)
 }
 Mesh::Mesh()
 {
-    this->genBuffers();
 }
 Mesh::~Mesh()
 {

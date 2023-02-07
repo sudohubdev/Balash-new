@@ -62,22 +62,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/balash",
             "args": [],
-            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "sourceFileMap": {
-                "${workspaceFolder}/build/balash": "main.cpp",
-            },
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Make Project"
+            "preLaunchTask": "Make Project",
         },
     ]
 }

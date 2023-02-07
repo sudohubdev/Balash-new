@@ -1,9 +1,8 @@
 BUILDDIR=build
-OPTIMIZE=-O0 -g #fast -msse4 -mfpmath=sse -march=native -mpopcnt -mbmi2  -fno-pie -fno-PIE -fno-PIC -no-pie 
 ELFNAME=balash
 
-CXX=g++
-LIBS = -O0
+CXX=g++ -g -O0
+LIBS = tobefilled
 
 ifeq ($(OS),Windows_NT)
 	LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
@@ -42,7 +41,7 @@ macos:
 	sudo ln -sf /opt/homebrew/Cellar/libpng/*/lib/libpng16.dylib /usr/local/lib/libpng16.dylib
 	sudo ln -sf /opt/homebrew/Cellar/freeglut/*/lib/libglut.dylib /usr/local/lib/libglut.dylib
 	sudo ln -sf /opt/homebrew/lib/libglib-2.0.0.dylib /usr/local/lib/libglib-2.0.0.dylib
-all:$(BUILDDIR)/$(ELFNAME) Makefile 
+all:$(BUILDDIR)/$(ELFNAME) Makefile
 
 getexec:#later for bloatstudio
 	@echo $(BUILDDIR)/$(ELFNAME)
@@ -63,4 +62,4 @@ mrproper:
 	mkdir $(BUILDDIR)
 
 $(BUILDDIR)/$(ELFNAME): $(OBJS)
-	$(CXX) $(OBJS) $(LIBS) $(OPTIMIZE) -o $(BUILDDIR)/$(ELFNAME)
+	$(CXX) $(OBJS) $(LIBS) -o $(BUILDDIR)/$(ELFNAME) 

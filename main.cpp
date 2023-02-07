@@ -10,7 +10,7 @@ int main()
     Renderer renderer = Renderer();
     // disable vsync
     // glfwSwapInterval(0);
-    Camera camera = Camera(75.0f, 1.0f, 0.1f, 100.0f);
+    Camera camera = Camera(75.0f, 1.0f, 0.1f, 200.0f);
     camera.position = glm::vec3(3, 4, 6);
     camera.lootAt(glm::vec3(0, 0, 0));
 
@@ -19,14 +19,16 @@ int main()
 
     Scene scene = Scene();
 
-    // Skybox skybox = Skybox({
-    //     "skybox/right.jpg",
-    //     "skybox/left.jpg",
-    //     "skybox/top.jpg",
-    //     "skybox/bottom.jpg",
-    //     "skybox/front.jpg",
-    //     "skybox/back.jpg",
-    // });
+    Skybox skybox = Skybox({
+        "skybox/right.png",
+        "skybox/left.png",
+        "skybox/top.png",
+        "skybox/bottom.png",
+        "skybox/front.png",
+        "skybox/back.png",
+    });
+    GLuint skyboxpgm = LoadShaders("skyvert.glsl", "skyfrag.glsl");
+    skybox.genBuffers();
     Texture *texture = new Texture("dino.png");
     Geometry *geometry = new Geometry("dino.obj");
     Texture *texture2 = new Texture("uvtest.png");
@@ -46,7 +48,22 @@ int main()
         float tick = renderer.Clear() * 100;
         if (tick != tick || tick > 10 || tick < 0)
             tick = 0;
-
+        //render skybox
+        glDepthMask(GL_FALSE);
+        glUseProgram(skyboxpgm);
+        skybox.bindBuffers();
+        camera.updateProjection();
+        camera.updateView();
+        GLuint MatrixID = glGetUniformLocation(skyboxpgm, "MVP");
+        glm::mat4 view = glm::mat4(glm::mat3(camera.getView()));
+        glm::mat4 MVP = camera.getProjection() * view;
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        skybox.unbindBuffers();
+        glUseProgram(0);
+        glDisableVertexAttribArray(0);
+        //glBindVertexArray(0);
+        glDepthMask(GL_TRUE);
         // circle move cube around dino
         mesh2->rotation.y += tick * 0.05f;
         mesh2->moveRelative(glm::vec3(0, 0, tick * 0.2f));

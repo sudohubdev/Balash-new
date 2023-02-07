@@ -5,7 +5,7 @@ using namespace std;
 #ifndef SKYBOX_HPP
 #define SKYBOX_HPP
 
-class Skybox : public Mesh
+class Skybox : protected Mesh
 {
 public:
     Skybox(vector<string> faces);
