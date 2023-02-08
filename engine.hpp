@@ -80,10 +80,17 @@ public:
     void setGeometry(Geometry *geometry);
     Texture *getTexture();
     Geometry *getGeometry();
-    void genBuffers();
-    void bindBuffers();
-    void unbindBuffers();
-    void setMVP(GLuint shaderID, glm::mat4 MVP);
+    virtual void genBuffers();
+    virtual void bindBuffers();
+    GLuint getVAO();
+    virtual void unbindBuffers();
+    // may be used for particular mesh rendering
+    virtual void attachShader(GLuint shaderID);
+    virtual GLuint getShader();
+
+    virtual void setMVP(GLuint shaderID, glm::mat4 MVP);
+    virtual void setMVP(Camera *camera);
+    virtual GLsizei getVertexCount();
     // basic mesh properties
     glm::vec3 position{0, 0, 0};
     glm::vec3 rotation{0, 0, 0};
@@ -99,11 +106,14 @@ protected:
     GLuint vertexbuffer;
     GLuint uvbuffer;
     GLuint normalbuffer;
+    GLuint vao;
+    GLuint shader;
 };
 
 class Texture
 {
 public:
+    Texture();
     Texture(const char *path);
     ~Texture();
     GLuint getTextureID();

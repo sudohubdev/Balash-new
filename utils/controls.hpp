@@ -18,6 +18,8 @@ public:
     // gets velocity of camera
     void resetDelta();
     glm::vec3 getVelocity();
+    glm::vec2 getMouseDelta();
+    void resize(int width, int height);
 
 protected:
     GLFWwindow *win;

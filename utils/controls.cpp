@@ -7,6 +7,7 @@ PointerlockControls::PointerlockControls(GLFWwindow *window, Camera *camera)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwSetWindowUserPointer(window, this);
+
     auto keyCallback = [](GLFWwindow *window, int key, int scancode, int action, int mods)
     {
         PointerlockControls *self = static_cast<PointerlockControls *>(glfwGetWindowUserPointer(window));
@@ -24,10 +25,18 @@ PointerlockControls::PointerlockControls(GLFWwindow *window, Camera *camera)
         self->resetDelta();
         self->Lock();
     };
+    auto resizeCallback = [](GLFWwindow *window, int width, int height)
+    {
+        PointerlockControls *self = static_cast<PointerlockControls *>(glfwGetWindowUserPointer(window));
+        glViewport(0, 0, width, height);
+        self->resize(width, height);
+    };
 
     glfwSetKeyCallback(window, keyCallback);
     glfwSetCursorPosCallback(window, mouseCallback);
     glfwSetMouseButtonCallback(window, clickCallback);
+    glfwSetWindowSizeCallback(window, resizeCallback);
+
     if (glfwRawMouseMotionSupported())
     {
         glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -62,7 +71,12 @@ void PointerlockControls::resetDelta()
     glfwGetCursorPos(win, &x, &y);
     lastMousePos = glm::vec2(x, y);
 }
-
+void PointerlockControls::resize(int width, int height)
+{
+    glViewport(0, 0, width, height);
+    this->camera->aspect = (float)width / (float)height;
+    this->camera->updateProjection();
+}
 glm::vec3 PointerlockControls::getVelocity()
 {
     // https://github.com/arduinka55055/threejs-minecraft/blob/master/static/src/lib/controlfirst.js
@@ -88,7 +102,7 @@ void PointerlockControls::mouseCallback(GLFWwindow *window, double xpos, double 
 {
     if (!locked)
         return;
-    cout << "mouseCallback" << endl;
+    //cout << "mouseCallback" << endl;
     glm::vec2 mousePos = glm::vec2(xpos, ypos);
     glm::vec2 mouseDelta = mousePos - lastMousePos;
     lastMousePos = mousePos;
@@ -110,6 +124,21 @@ void PointerlockControls::keyCallback(GLFWwindow *window, int key, int scancode,
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         this->Unlock();
+
+    if (key == GLFW_KEY_F11 && action == GLFW_PRESS)
+    {
+        bool fullscreen = glfwGetWindowMonitor(window) != NULL;
+        if (fullscreen)
+        {
+            glfwSetWindowMonitor(window, nullptr, 0, 0, 800, 600, 0);
+            return;
+        }
+        int monitorwidth, monitorheight;
+        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+        glfwGetMonitorPhysicalSize(monitor, &monitorwidth, &monitorheight);
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    }
 
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
         velocity.z += 1;

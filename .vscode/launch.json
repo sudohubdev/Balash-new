@@ -8,12 +8,12 @@
             "name": "g++ - Build (Linux)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/balash",
+            "program": "${workspaceFolder}/build/balash",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "sourceFileMap": {
-                "${workspaceFolder}/balash": "main.cpp",
+                "${workspaceFolder}/build/balash": "main.cpp",
             },
             "environment": [],
             "externalConsole": false,
@@ -36,27 +36,13 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
+            "sourceFileMap": {
+                "main.cpp": "${workspaceFolder}/main.cpp",
+            },
             "environment": [],
             "externalConsole": true,
             "avoidWindowsConsoleRedirection": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
-            "preLaunchTask": "Make MSYS"
-        },
-        {
-            "name": "g++ - Build (macOS)",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/balash",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "sourceFileMap": {
-                "${workspaceFolder}/balash": "main.cpp",
-            },
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -64,7 +50,20 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "Make Project"
+            "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
+            "preLaunchTask": "Make MSYS",
+            "logging": {
+                "engineLogging": true
+            }
+        },
+        {
+            "name": "g++ - Build (macOS)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/balash",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Make Project",
         },
     ]
 }

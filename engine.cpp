@@ -3,6 +3,9 @@ using namespace std;
 
 // Renderer
 #pragma region "renderer"
+
+static GLuint GLOBALSHADER = 0;
+
 Renderer::Renderer()
 {
     // init
@@ -34,17 +37,16 @@ Renderer::Renderer()
     }
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(win, GLFW_STICKY_KEYS, GL_TRUE);
-    // making buffers
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
+
     glActiveTexture(GL_TEXTURE);
     // Enabling features
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
-    glDepthFunc(GL_LESS);
-    // Create and compile our GLSL program from the shaders
+    glDepthFunc(GL_LEQUAL);
+    // Create and compile our GLSL program from the shaders (global)
     programID = LoadShaders("./shad.vsh", "./shad.fsh");
+    GLOBALSHADER = programID;
 }
 
 Renderer::~Renderer()
@@ -96,17 +98,10 @@ void Renderer::Render(Scene *scene, Camera *camera)
         // cout << "Mesh has " << mesh->getGeometry()->vertices.size() << "vertices" << endl;
         // cout << "Mesh texture is " << mesh->getTexture()->getTextureID() << endl;
         //  mesh->bindBuffers();
-        glUseProgram(programID);
-
-        camera->updateProjection();
-        camera->updateView();
-        // the multiplication order is important
-        glm::mat4 MVP = camera->getProjection() * camera->getView() * mesh->getModelMatrix();
-
         mesh->bindBuffers();
-        mesh->setMVP(this->programID, MVP);
+        mesh->setMVP(camera);
 
-        glDrawArrays(GL_TRIANGLES, 0, mesh->getGeometry()->vertices.size());
+        glDrawArrays(GL_TRIANGLES, 0, mesh->getVertexCount());
         mesh->unbindBuffers();
     }
 }
@@ -130,6 +125,8 @@ Camera::Camera(float fov, float aspect, float near, float far)
     this->aspect = aspect;
     this->near = near;
     this->far = far;
+    this->position = glm::vec3(0, 0, 0);
+    this->rotation = glm::vec3(0, 0, 0);
     updateProjection();
 }
 void Camera::updateProjection()
@@ -200,11 +197,11 @@ Mesh::Mesh(Texture *texture, Geometry *geometry)
 {
     this->texture = texture;
     this->geometry = geometry;
+    this->attachShader(GLOBALSHADER);
     this->genBuffers();
 }
 Mesh::Mesh()
 {
-    this->genBuffers();
 }
 Mesh::~Mesh()
 {
@@ -231,6 +228,8 @@ Geometry *Mesh::getGeometry()
 }
 void Mesh::genBuffers()
 {
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, this->geometry->vertices.size() * sizeof(glm::vec3), this->geometry->vertices.data(), GL_STATIC_DRAW);
@@ -243,6 +242,8 @@ void Mesh::genBuffers()
 }
 void Mesh::bindBuffers()
 {
+    glUseProgram(this->getShader());
+    glBindVertexArray(vao);
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -281,6 +282,16 @@ void Mesh::bindBuffers()
     glBindTexture(GL_TEXTURE_2D, this->texture->getTextureID()); // when the currently-active sampler samples from a 2D texture, this is the texture to use.
     glEnable(GL_TEXTURE_2D);                                     // the currently-active sampler should actually use the bound 2D texture.
 }
+void Mesh::attachShader(GLuint shaderID)
+{
+    // Use our shader
+    this->shader = shaderID;
+    // glUseProgram(shaderID);
+}
+GLuint Mesh::getShader()
+{
+    return this->shader;
+}
 void Mesh::unbindBuffers()
 {
     glDisableVertexAttribArray(0);
@@ -288,6 +299,8 @@ void Mesh::unbindBuffers()
     glDisableVertexAttribArray(2);
     // Disable our texture
     glDisable(GL_TEXTURE_2D);
+    // Unbind vao
+    glBindVertexArray(0);
 }
 void Mesh::setMVP(GLuint shaderID, glm::mat4 MVP)
 {
@@ -295,6 +308,19 @@ void Mesh::setMVP(GLuint shaderID, glm::mat4 MVP)
     // in the "MVP" uniform
     GLuint MatrixID = glGetUniformLocation(shaderID, "MVP");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+}
+// does almost everything needed with matrices
+void Mesh::setMVP(Camera *camera)
+{
+    camera->updateProjection();
+    camera->updateView();
+    glm::mat4 MVP = camera->getProjection() * camera->getView() * this->getModelMatrix();
+    this->setMVP(this->shader, MVP);
+}
+
+GLsizei Mesh::getVertexCount()
+{
+    return this->geometry->vertices.size();
 }
 void Mesh::moveRelative(glm::vec3 move)
 {
@@ -321,13 +347,18 @@ glm::mat4 Mesh::getModelMatrix()
 // Texture
 #pragma region "texture"
 
+Texture::Texture()
+{
+    // cout << "Texture loaded from memory. beware nulls!" << endl;
+    textureID = 0;
+}
 Texture::Texture(const char *path)
 {
     cout << "Texture loaded from " << path << endl;
     assert(sizeof(path) > 0);
     string s = path;
     assert(s.find("png") != string::npos);
-    textureID = platspec_loadpng(path);
+    textureID = loadpng(path);
     // assert(textureID != 0);
 }
 Texture::~Texture()
