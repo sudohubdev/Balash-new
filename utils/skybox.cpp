@@ -73,6 +73,14 @@ void Skybox::genBuffers()
     glBindVertexArray(0);
 }
 
+void Skybox::attachShader(GLuint shader)
+{
+    this->shader = shader;
+}
+GLuint Skybox::getShader()
+{
+    return this->shader;
+}
 void Skybox::bindBuffers()
 {
     glBindVertexArray(vao);
@@ -80,11 +88,32 @@ void Skybox::bindBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, vao);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture->getTextureID());
+    // use shader
+    glUseProgram(this->shader);
+    // disable mask
+    glDepthMask(GL_FALSE);
+}
+
+void Skybox::setMVP(Camera *camera)
+{
+    glm::mat4 view = glm::mat4(glm::mat3(camera->getView()));
+    glm::mat4 projection = camera->getProjection();
+    glm::mat4 MVP = projection * view;
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
+}
+
+GLsizei Skybox::getVertexCount()
+{
+    return 36;
 }
 void Skybox::unbindBuffers()
 {
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);
+    // enable mask
+    glDepthMask(GL_TRUE);
+    // unuse shader
+    glUseProgram(0);
 }
 
 Skybox::~Skybox()

@@ -5,7 +5,7 @@ using namespace std;
 #ifndef SKYBOX_HPP
 #define SKYBOX_HPP
 
-class Skybox : protected Mesh
+class Skybox : public Mesh
 {
 public:
     Skybox(vector<string> faces);
@@ -14,6 +14,10 @@ public:
     ~Skybox();
     void Render(Renderer *renderer, Camera *camera);
     void genBuffers();
+    void attachShader(GLuint shader);
+    GLuint getShader();
+    void setMVP(Camera *camera);
+    GLsizei getVertexCount();
 
 protected:
     vector<string> faces;
