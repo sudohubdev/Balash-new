@@ -34,9 +34,7 @@ Renderer::Renderer()
     }
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(win, GLFW_STICKY_KEYS, GL_TRUE);
-    // making buffers
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
+
     glActiveTexture(GL_TEXTURE);
     // Enabling features
     glEnable(GL_DEPTH_TEST);
@@ -230,6 +228,8 @@ Geometry *Mesh::getGeometry()
 }
 void Mesh::genBuffers()
 {
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, this->geometry->vertices.size() * sizeof(glm::vec3), this->geometry->vertices.data(), GL_STATIC_DRAW);
@@ -242,6 +242,7 @@ void Mesh::genBuffers()
 }
 void Mesh::bindBuffers()
 {
+    glBindVertexArray(vao);
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -287,6 +288,8 @@ void Mesh::unbindBuffers()
     glDisableVertexAttribArray(2);
     // Disable our texture
     glDisable(GL_TEXTURE_2D);
+    // Unbind vao
+    glBindVertexArray(0);
 }
 void Mesh::setMVP(GLuint shaderID, glm::mat4 MVP)
 {
@@ -320,6 +323,11 @@ glm::mat4 Mesh::getModelMatrix()
 // Texture
 #pragma region "texture"
 
+Texture::Texture()
+{
+    // cout << "Texture loaded from memory. beware nulls!" << endl;
+    textureID = 0;
+}
 Texture::Texture(const char *path)
 {
     cout << "Texture loaded from " << path << endl;

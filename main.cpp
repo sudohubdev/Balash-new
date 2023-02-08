@@ -48,7 +48,7 @@ int main()
         float tick = renderer.Clear() * 100;
         if (tick != tick || tick > 10 || tick < 0)
             tick = 0;
-        //render skybox
+        // render skybox
         glDepthMask(GL_FALSE);
         glUseProgram(skyboxpgm);
         skybox.bindBuffers();
@@ -60,10 +60,8 @@ int main()
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         skybox.unbindBuffers();
-        glUseProgram(0);
-        glDisableVertexAttribArray(0);
-        //glBindVertexArray(0);
         glDepthMask(GL_TRUE);
+
         // circle move cube around dino
         mesh2->rotation.y += tick * 0.05f;
         mesh2->moveRelative(glm::vec3(0, 0, tick * 0.2f));

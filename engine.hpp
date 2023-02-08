@@ -106,6 +106,7 @@ protected:
 class Texture
 {
 public:
+    Texture();
     Texture(const char *path);
     ~Texture();
     GLuint getTextureID();

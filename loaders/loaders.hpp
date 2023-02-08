@@ -23,6 +23,9 @@ texturedata loadpng_raw(const char *filename);
 // loads a .png file into a texture
 GLuint loadpng(const char *filename);
 
+// loads .png files into a cubemap
+GLuint loadpngSkybox(vector<string> faces);
+
 // loads shaders from files into a program
 GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path);
 
