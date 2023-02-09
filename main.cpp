@@ -28,11 +28,12 @@ int main()
     });
     skybox.attachShader(LoadShaders("shaders/sky.vert", "shaders/sky.frag"));
 
-    Texture *texture = new Texture("assets/dino.png");
-    Geometry *geometry = new Geometry("assets/dino.obj");
+    Texture *texture = new Texture("assets/murlok.png");
+    Geometry *geometry = new Geometry("assets/murlok.obj");
     Texture *texture2 = new Texture("assets/uvtest.png");
     Geometry *geometry2 = new Geometry("assets/cube.obj");
     Mesh *mesh = new Mesh(texture, geometry);
+    mesh->scale = glm::vec3(10, 10, 10);
     Mesh *mesh2 = new Mesh(texture2, geometry2);
     Mesh *mesh3 = new Mesh(texture2, geometry2);
 
@@ -40,10 +41,10 @@ int main()
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
     scene.addMesh(&skybox);
-    scene.addMesh(mesh3);
-    scene.addMesh(lightcube);
+    // scene.addMesh(mesh3);
+    // scene.addMesh(lightcube);
     lightcube->attachShader(LoadShaders("shaders/main.vert", "shaders/lightcube.frag"));
-    mesh->moveRelative(glm::vec3(0, 0, -5));
+    mesh->moveRelative(glm::vec3(0, 0, -10));
     mesh2->position = glm::vec3(0, 0, 0);
     // render
     while (!renderer.shouldClose())
@@ -55,7 +56,7 @@ int main()
 
         // circle move cube around dino
         mesh2->rotation.y += tick * 0.05f;
-        mesh2->moveRelative(glm::vec3(0, 0, tick * 0.2f));
+        mesh2->moveRelative(glm::vec3(0, 0, tick * 0.5f));
 
         mesh3->rotation.z += tick * 0.1f;
         mesh3->moveRelative(glm::vec3(tick * 0.5f, 0, 0));

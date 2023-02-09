@@ -316,6 +316,8 @@ void Mesh::setMVP(Camera *camera)
     camera->updateView();
     glm::mat4 MVP = camera->getProjection() * camera->getView() * this->getModelMatrix();
     this->setMVP(this->shader, MVP);
+    GLuint MatrixID = glGetUniformLocation(this->getShader(), "model");
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &this->getModelMatrix()[0][0]);
 }
 
 GLsizei Mesh::getVertexCount()
