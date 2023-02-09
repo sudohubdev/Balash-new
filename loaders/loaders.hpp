@@ -29,4 +29,10 @@ GLuint loadpngSkybox(vector<string> faces);
 // loads shaders from files into a program
 GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path);
 
+// loads a .ttf file into a font
+void loadfont(const char *filename);
+
+// visualizes a string in a font
+void drawstring(char font, string text, float x, float y, float sx, float sy);
+
 #endif

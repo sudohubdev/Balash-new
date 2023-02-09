@@ -2,6 +2,7 @@
 #include "loaders/loaders.hpp"
 #include "utils/controls.hpp"
 #include "utils/skybox.hpp"
+#include "objects/lightcube.hpp"
 #include "engine.hpp"
 
 int main()
@@ -18,26 +19,31 @@ int main()
     Scene scene = Scene();
 
     Skybox skybox = Skybox({
-        "skybox/right.png",
-        "skybox/left.png",
-        "skybox/top.png",
-        "skybox/bottom.png",
-        "skybox/front.png",
-        "skybox/back.png",
+        "assets/skybox/right.png",
+        "assets/skybox/left.png",
+        "assets/skybox/top.png",
+        "assets/skybox/bottom.png",
+        "assets/skybox/front.png",
+        "assets/skybox/back.png",
     });
-    skybox.attachShader(LoadShaders("skyvert.glsl", "skyfrag.glsl"));
+    skybox.attachShader(LoadShaders("shaders/sky.vert", "shaders/sky.frag"));
 
-    Texture *texture = new Texture("dino.png");
-    Geometry *geometry = new Geometry("dino.obj");
-    Texture *texture2 = new Texture("uvtest.png");
-    Geometry *geometry2 = new Geometry("cube.obj");
+    Texture *texture = new Texture("assets/dino.png");
+    Geometry *geometry = new Geometry("assets/dino.obj");
+    Texture *texture2 = new Texture("assets/uvtest.png");
+    Geometry *geometry2 = new Geometry("assets/cube.obj");
     Mesh *mesh = new Mesh(texture, geometry);
     Mesh *mesh2 = new Mesh(texture2, geometry2);
     Mesh *mesh3 = new Mesh(texture2, geometry2);
+
+    LightCube *lightcube = new LightCube();
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
     scene.addMesh(&skybox);
     scene.addMesh(mesh3);
+    scene.addMesh(lightcube);
+    lightcube->attachShader(LoadShaders("shaders/main.vert", "shaders/lightcube.frag"));
+    mesh->moveRelative(glm::vec3(0, 0, -5));
     mesh2->position = glm::vec3(0, 0, 0);
     // render
     while (!renderer.shouldClose())

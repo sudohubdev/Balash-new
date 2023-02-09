@@ -1,5 +1,6 @@
 #version 330 core
 in vec3 fragmentColor;
+layout(location = 2) in vec2 vertexNormal;
 in vec2 UV;
 out vec3 color;
 
