@@ -1,5 +1,8 @@
 # Balash-new - rewrite of balash
 the example of opengl engine
+
+<img src="https://user-images.githubusercontent.com/36532941/218088488-415a3216-e5b1-4130-ac55-2d6f88932f43.png"  width="400px"/>
+
 # Build
 ## For mac users:
 ### Install brew + xcode
@@ -11,8 +14,10 @@ brew install glm
 make macos
 make
 ```
+
+
 ## For Windows users:
-### Download MSYS2 and VS Code
+### Download MSYS2 and VS Code(or any other IDE, tho `VS will not work!`)
 
 https://www.msys2.org
 
@@ -46,6 +51,7 @@ make
 ```
 
 
-
-#To make a new project(delete all cpp files):
+# To make a new project(delete all cpp files):
+```bash
 make newproject
+```
