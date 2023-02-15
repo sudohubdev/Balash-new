@@ -21,5 +21,5 @@ void main(){
     // UV of the vertex. No special space for this one.
     UV = vertexUV;
     FragPos = vec3(model * vec4(vertexPosition, 1.0));
-    Normal = vertexNormal;
+    Normal = mat3(transpose(inverse(model))) * vertexNormal;
 }

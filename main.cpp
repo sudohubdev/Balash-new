@@ -41,7 +41,7 @@ int main()
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
     scene.addMesh(&skybox);
-    // scene.addMesh(mesh3);
+    scene.addMesh(mesh3);
     // scene.addMesh(lightcube);
     lightcube->attachShader(LoadShaders("shaders/main.vert", "shaders/lightcube.frag"));
     mesh->moveRelative(glm::vec3(0, 0, -10));
@@ -55,11 +55,8 @@ int main()
             tick = 0;
 
         // circle move cube around dino
-        mesh2->rotation.y += tick * 0.05f;
-        mesh2->moveRelative(glm::vec3(0, 0, tick * 0.5f));
-
-        mesh3->rotation.z += tick * 0.1f;
-        mesh3->moveRelative(glm::vec3(tick * 0.5f, 0, 0));
+        mesh2->rotation.y += tick * 0.01f;
+        mesh2->moveRelative(glm::vec3(0, 0, tick * 0.1f));
         renderer.Render(&scene, &camera);
         camera.position += controls.getVelocity() * (0.4f * tick);
         // cout << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << endl;

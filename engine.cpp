@@ -100,6 +100,11 @@ void Renderer::Render(Scene *scene, Camera *camera)
         //  mesh->bindBuffers();
         mesh->bindBuffers();
         mesh->setMVP(camera);
+        // set uniforms
+        GLuint ID = glGetUniformLocation(mesh->getShader(), "time");
+        glUniform1f(ID, (float)glfwGetTime());
+        ID = glGetUniformLocation(mesh->getShader(), "camPos");
+        glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
 
         glDrawArrays(GL_TRIANGLES, 0, mesh->getVertexCount());
         mesh->unbindBuffers();
