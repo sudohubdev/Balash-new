@@ -18,6 +18,7 @@ public:
     // gets velocity of camera
     void resetDelta();
     glm::vec3 getVelocity();
+    glm::vec3 getVelocityAux(glm::vec3 rot);
     glm::vec2 getMouseDelta();
     void resize(int width, int height);
 
@@ -26,6 +27,7 @@ protected:
     Camera *camera;
     bool locked = false;
     glm::vec3 velocity;
+    glm::vec3 velocityAux;
     glm::vec2 lastMousePos;
 };
 #endif

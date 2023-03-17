@@ -80,6 +80,7 @@ void PointerlockControls::resize(int width, int height)
 glm::vec3 PointerlockControls::getVelocity()
 {
     // https://github.com/arduinka55055/threejs-minecraft/blob/master/static/src/lib/controlfirst.js
+    // FPS control mode (WASD, cant make plane manuevers)
     this->camera->updateView();
     glm::mat4 rot = this->camera->getView();
     glm::vec3 res = glm::vec3(0, 0, 0);
@@ -93,6 +94,30 @@ glm::vec3 PointerlockControls::getVelocity()
     // up
     res.y += velocity.y;
 
+    // we dont want nan
+    if (res.x != res.x || res.y != res.y || res.z != res.z)
+        return glm::vec3(0, 0, 0);
+    return res;
+}
+
+glm::vec3 PointerlockControls::getVelocityAux(glm::vec3 rot)
+{
+    // https://github.com/arduinka55055/threejs-minecraft/blob/master/static/src/lib/controlfirst.js
+    // FPS control mode (WASD, cant make plane manuevers) TODO
+    glm::mat4 mat = glm::lookAt(glm::vec3(0, 0, 0), rot, glm::vec3(0, 1, 0));
+
+    glm::vec3 res = glm::vec3(0, 0, 0);
+    // forward
+    glm::vec3 vec = glm::vec3(mat[0][0], mat[1][0], mat[2][0]);
+    vec = glm::cross(vec, glm::vec3(0, 1, 0));
+    res -= vec * velocityAux.z;
+    // right
+    vec = glm::vec3(mat[0][0], mat[1][0], mat[2][0]);
+    res += vec * velocityAux.x;
+    // up
+    res.y += velocityAux.y;
+
+    // we dont want nan
     if (res.x != res.x || res.y != res.y || res.z != res.z)
         return glm::vec3(0, 0, 0);
     return res;
@@ -102,7 +127,7 @@ void PointerlockControls::mouseCallback(GLFWwindow *window, double xpos, double 
 {
     if (!locked)
         return;
-    //cout << "mouseCallback" << endl;
+    // cout << "mouseCallback" << endl;
     glm::vec2 mousePos = glm::vec2(xpos, ypos);
     glm::vec2 mouseDelta = mousePos - lastMousePos;
     lastMousePos = mousePos;
@@ -139,7 +164,7 @@ void PointerlockControls::keyCallback(GLFWwindow *window, int key, int scancode,
         glfwGetMonitorPhysicalSize(monitor, &monitorwidth, &monitorheight);
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     }
-
+    // WASD
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
         velocity.z += 1;
     if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -170,7 +195,42 @@ void PointerlockControls::keyCallback(GLFWwindow *window, int key, int scancode,
     if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
         velocity.y += 1;
 
+    // arrows
+    if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+        velocityAux.z += 1;
+    if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
+        velocityAux.z -= 1;
+
+    if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+        velocityAux.z -= 1;
+    if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
+        velocityAux.z += 1;
+
+    if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+        velocityAux.x -= 1;
+    if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
+        velocityAux.x += 1;
+
+    if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+        velocityAux.x += 1;
+    if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
+        velocityAux.x -= 1;
+
+    if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS)
+        velocityAux.y += 1;
+    if (key == GLFW_KEY_PAGE_UP && action == GLFW_RELEASE)
+        velocityAux.y -= 1;
+
+    if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS)
+        velocityAux.y -= 1;
+    if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_RELEASE)
+        velocityAux.y += 1;
+
     velocity.x = glm::clamp(velocity.x, -1.0f, 1.0f);
     velocity.y = glm::clamp(velocity.y, -1.0f, 1.0f);
     velocity.z = glm::clamp(velocity.z, -1.0f, 1.0f);
+
+    velocityAux.x = glm::clamp(velocityAux.x, -1.0f, 1.0f);
+    velocityAux.y = glm::clamp(velocityAux.y, -1.0f, 1.0f);
+    velocityAux.z = glm::clamp(velocityAux.z, -1.0f, 1.0f);
 }
