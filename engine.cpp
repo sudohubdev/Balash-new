@@ -18,7 +18,11 @@ Renderer::Renderer()
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);           // To make MacOS happy; should not be needed
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
+#endif
+
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL
     // Open a window and create its OpenGL context
     win = glfwCreateWindow(resx, resy, "balash", NULL, NULL);
@@ -45,7 +49,7 @@ Renderer::Renderer()
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
     // Create and compile our GLSL program from the shaders (global)
-    programID = LoadShaders("./shad.vsh", "./shad.fsh");
+    programID = LoadShaders("shaders/main.vert", "shaders/main.frag");
     GLOBALSHADER = programID;
 }
 
@@ -100,6 +104,11 @@ void Renderer::Render(Scene *scene, Camera *camera)
         //  mesh->bindBuffers();
         mesh->bindBuffers();
         mesh->setMVP(camera);
+        // set uniforms
+        GLuint ID = glGetUniformLocation(mesh->getShader(), "time");
+        glUniform1f(ID, (float)glfwGetTime());
+        ID = glGetUniformLocation(mesh->getShader(), "camPos");
+        glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
 
         glDrawArrays(GL_TRIANGLES, 0, mesh->getVertexCount());
         mesh->unbindBuffers();
@@ -316,6 +325,8 @@ void Mesh::setMVP(Camera *camera)
     camera->updateView();
     glm::mat4 MVP = camera->getProjection() * camera->getView() * this->getModelMatrix();
     this->setMVP(this->shader, MVP);
+    GLuint MatrixID = glGetUniformLocation(this->getShader(), "model");
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &this->getModelMatrix()[0][0]);
 }
 
 GLsizei Mesh::getVertexCount()

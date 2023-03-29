@@ -17,9 +17,9 @@ endif
 #LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
 #LIBS=-fsanitize=address -static-libasan `pkg-config --libs --cflags glew libpng16 glfw3`
 
-HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp) $(wildcard loaders/*.hpp) $(wildcard utils/*.hpp) 
+HEADERS=$(wildcard include/*.hpp) $(wildcard *.hpp) $(wildcard loaders/*.hpp) $(wildcard utils/*.hpp) $(wildcard objects/*.hpp)
 
-SOURCE:=$(wildcard *.cpp) $(wildcard loaders/*.cpp) $(wildcard utils/*.cpp) 
+SOURCE:=$(wildcard *.cpp) $(wildcard loaders/*.cpp) $(wildcard utils/*.cpp) $(wildcard objects/*.cpp)
 OBJS:=$(SOURCE:.cpp=.o)
 
 default:$(HEADERS) mkdir all run 
