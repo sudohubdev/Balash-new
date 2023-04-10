@@ -126,6 +126,7 @@ class Geometry
 {
 public:
     Geometry(const char *path);
+    Geometry();
     Geometry(vector<glm::vec3> vertices, vector<glm::vec2> uvs, vector<glm::vec3> normals);
     Geometry(vector<glm::vec3> vertices);
     ~Geometry();

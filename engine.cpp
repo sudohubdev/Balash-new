@@ -110,7 +110,7 @@ void Renderer::Render(Scene *scene, Camera *camera)
         ID = glGetUniformLocation(mesh->getShader(), "camPos");
         glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
 
-        glDrawArrays(GL_TRIANGLES, 0, mesh->getVertexCount());
+        glDrawArrays(GL_LINE_STRIP, 0, mesh->getVertexCount());
         mesh->unbindBuffers();
     }
 }
@@ -385,6 +385,12 @@ GLuint Texture::getTextureID()
 
 // Geometry
 #pragma region "geometry"
+
+Geometry::Geometry()
+{
+    this->vertices = vector<glm::vec3>();
+    // cout << "Geometry loaded from memory. beware nulls!" << endl;
+}
 
 Geometry::Geometry(const char *path)
 {

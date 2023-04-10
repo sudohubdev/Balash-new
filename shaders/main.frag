@@ -37,5 +37,5 @@ void main(){
     specular = spec * lightColor;
     }
     vec3 result = (diffuse+specular) * objectColor;
-    color = result;
+    color = objectColor;
 }

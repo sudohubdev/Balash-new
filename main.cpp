@@ -4,6 +4,7 @@
 #include "utils/skybox.hpp"
 #include "objects/lightcube.hpp"
 #include "engine.hpp"
+#include "objects/NURBS.hpp"
 
 int main()
 {
@@ -37,16 +38,39 @@ int main()
     Mesh *mesh = new Mesh(texture, geometry);
     mesh->scale = glm::vec3(10, 10, 10);
     Mesh *mesh2 = new Mesh(texture2, geometry2);
-    Mesh *mesh3 = new Mesh(texture3, geometry3);
-    mesh3->scale = glm::vec3(20, 20, 20);
-    Mesh *lightcube = new Mesh(texture2, geometry2);
-    lightcube->scale = glm::vec3(0.3, 0.3, 0.3);
+    Mesh *mesh3 = new Mesh(texture2, geometry2);
+
+    //custom curves
+    Texture *uvtest = new Texture("assets/test.png");
+    Geometry *nurbs = new NURBS({
+        // circle
+        glm::vec4(-2, -2, 1, 1.0f),
+        glm::vec4(-2, -1, -2, 1.0f),
+        glm::vec4(-2, 1, 2.5f, 1.0f),
+        glm::vec4(-2, 2, -1, 1.0f),
+   
+        glm::vec4(0.0f, -2, 0.0f, 1.0f),
+        glm::vec4(0.0f, -1, -1, 5.0f),
+        glm::vec4(0.0f, 1, 1.5f, 5.0f),
+        glm::vec4(0.0f, 2, 0.0f, 1.0f),
+    
+        glm::vec4(2, -2, -1, 1.0f),
+        glm::vec4(2, -1, 2, 1.0f),
+        glm::vec4(2, 1, -2.5f, 1.0f),
+        glm::vec4(2, 2, 1, 1.0f),
+    }, 2, 2, 50, 50);
+    nurbs->vertices.push_back(glm::vec3(0, 0, 0));//tracer 
+    Mesh *mesh4 = new Mesh(uvtest, nurbs);
+    mesh4->position = glm::vec3(0, 10, 0);
+    mesh4->scale = glm::vec3(4000, 4000, 4000);
+    LightCube *lightcube = new LightCube();
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
     scene.addMesh(&skybox);
     scene.addMesh(mesh3);
-    scene.addMesh(lightcube);
-    lightcube->attachShader(mesh->getShader());
+    scene.addMesh(mesh4);
+    // scene.addMesh(lightcube);
+    lightcube->attachShader(LoadShaders("shaders/main.vert", "shaders/lightcube.frag"));
     mesh->moveRelative(glm::vec3(0, 0, -10));
     mesh2->position = glm::vec3(0, 0, 0);
     // render
