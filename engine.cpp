@@ -110,7 +110,7 @@ void Renderer::Render(Scene *scene, Camera *camera)
         ID = glGetUniformLocation(mesh->getShader(), "camPos");
         glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
 
-        glDrawArrays(GL_LINE_STRIP, 0, mesh->getVertexCount());
+        glDrawArrays(GL_TRIANGLES, 0, mesh->getVertexCount());
         mesh->unbindBuffers();
     }
 }

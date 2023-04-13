@@ -41,7 +41,7 @@ int main()
     Mesh *mesh3 = new Mesh(texture2, geometry2);
 
     //custom curves
-    Texture *uvtest = new Texture("assets/test.png");
+    Texture *uvtest = new Texture("assets/uwu.png");
     Geometry *nurbs = new NURBS({
         // circle
         glm::vec4(-2, -2, 1, 1.0f),
@@ -59,16 +59,17 @@ int main()
         glm::vec4(2, 1, -2.5f, 1.0f),
         glm::vec4(2, 2, 1, 1.0f),
     }, 2, 2, 50, 50);
-    nurbs->vertices.push_back(glm::vec3(0, 0, 0));//tracer 
+    //nurbs->vertices.push_back(glm::vec3(0, 0, 0));//tracer 
     Mesh *mesh4 = new Mesh(uvtest, nurbs);
     mesh4->position = glm::vec3(0, 10, 0);
-    mesh4->scale = glm::vec3(4000, 4000, 4000);
+    mesh4->scale = glm::vec3(40, 40, 40);
     LightCube *lightcube = new LightCube();
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
     scene.addMesh(&skybox);
     scene.addMesh(mesh3);
     scene.addMesh(mesh4);
+    glDisable(GL_CULL_FACE);
     // scene.addMesh(lightcube);
     lightcube->attachShader(LoadShaders("shaders/main.vert", "shaders/lightcube.frag"));
     mesh->moveRelative(glm::vec3(0, 0, -10));
