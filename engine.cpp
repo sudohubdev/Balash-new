@@ -386,6 +386,12 @@ GLuint Texture::getTextureID()
 // Geometry
 #pragma region "geometry"
 
+Geometry::Geometry()
+{
+    this->vertices = vector<glm::vec3>();
+    // cout << "Geometry loaded from memory. beware nulls!" << endl;
+}
+
 Geometry::Geometry(const char *path)
 {
     cout << "Geometry loaded from " << path << endl;
