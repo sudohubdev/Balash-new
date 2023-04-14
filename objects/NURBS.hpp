@@ -6,7 +6,7 @@
 class NURBS : public Geometry
 {
 public:
-    NURBS(std::vector<glm::vec4> points, int degreeU, int degreeV, int resolutionU, int resolutionV);
+    NURBS(std::vector<glm::vec4> points, int resolution);
     NURBS();
     ~NURBS();
 };
