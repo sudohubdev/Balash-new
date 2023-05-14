@@ -91,6 +91,7 @@ public:
     virtual void setMVP(GLuint shaderID, glm::mat4 MVP);
     virtual void setMVP(Camera *camera);
     virtual GLsizei getVertexCount();
+    virtual void draw(Camera *camera);
     // basic mesh properties
     glm::vec3 position{0, 0, 0};
     glm::vec3 rotation{0, 0, 0};
@@ -134,6 +135,7 @@ public:
     vector<glm::vec3> vertices;
     vector<glm::vec2> uvs;
     vector<glm::vec3> normals;
+    vector<unsigned int> indices;
 };
 
 #endif

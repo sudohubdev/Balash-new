@@ -5,6 +5,7 @@
 #include "objects/lightcube.hpp"
 #include "engine.hpp"
 #include "objects/NURBS.hpp"
+#include "objects/anim/AnimMesh.hpp"
 
 int main()
 {
@@ -31,11 +32,10 @@ int main()
 
     Texture *texture = new Texture("assets/uvgrid.png");
     Geometry *geometry = new Geometry("assets/Model1.obj");
-    Texture *texture2 = new Texture("assets/uvtest.png");
-    Geometry *geometry2 = new Geometry("assets/cube.obj");
     Mesh *mesh = new Mesh(texture, geometry);
     mesh->scale = glm::vec3(10, 10, 10);
-    Mesh *mesh2 = new Mesh(texture2, geometry2);
+
+    Mesh *mesh2 = new AnimMesh("assets/murlok.obj");
 
     //custom curves
     Texture *uwu = new Texture("assets/uwu.png");

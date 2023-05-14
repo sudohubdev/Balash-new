@@ -102,16 +102,7 @@ void Renderer::Render(Scene *scene, Camera *camera)
         // cout << "Mesh has " << mesh->getGeometry()->vertices.size() << "vertices" << endl;
         // cout << "Mesh texture is " << mesh->getTexture()->getTextureID() << endl;
         //  mesh->bindBuffers();
-        mesh->bindBuffers();
-        mesh->setMVP(camera);
-        // set uniforms
-        GLuint ID = glGetUniformLocation(mesh->getShader(), "time");
-        glUniform1f(ID, (float)glfwGetTime());
-        ID = glGetUniformLocation(mesh->getShader(), "camPos");
-        glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
-
-        glDrawArrays(GL_TRIANGLES, 0, mesh->getVertexCount());
-        mesh->unbindBuffers();
+        mesh->draw(camera);
     }
 }
 bool Renderer::shouldClose()
@@ -333,6 +324,18 @@ GLsizei Mesh::getVertexCount()
 {
     return this->geometry->vertices.size();
 }
+void Mesh::draw(Camera *camera){
+    bindBuffers();
+    setMVP(camera);
+    // set uniforms
+    GLuint ID = glGetUniformLocation(getShader(), "time");
+    glUniform1f(ID, (float)glfwGetTime());
+    ID = glGetUniformLocation(getShader(), "camPos");
+    glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
+
+    glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
+    unbindBuffers();
+}
 void Mesh::moveRelative(glm::vec3 move)
 {
     glm::mat4 rot = glm::mat3(1.0f);
@@ -389,7 +392,10 @@ GLuint Texture::getTextureID()
 Geometry::Geometry()
 {
     this->vertices = vector<glm::vec3>();
-    // cout << "Geometry loaded from memory. beware nulls!" << endl;
+    this->uvs = vector<glm::vec2>();
+    this->normals = vector<glm::vec3>();
+    this->indices = vector<unsigned int>();
+    // cout << "Geometry loaded from memory. beware of nulls!" << endl;
 }
 
 Geometry::Geometry(const char *path)

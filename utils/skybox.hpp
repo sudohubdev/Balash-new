@@ -18,6 +18,7 @@ public:
     GLuint getShader();
     void setMVP(Camera *camera);
     GLsizei getVertexCount();
+    void draw();
 
 protected:
     vector<string> faces;
