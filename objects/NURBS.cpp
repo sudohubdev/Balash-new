@@ -150,6 +150,7 @@ NURBS::NURBS(std::vector<glm::vec4> points, int resolution): Geometry()
             float u = float(i) / float(resolution);
             glm::vec3 vertex = interpolate(u, p, points);
             this->vertices.push_back(vertex);
+            //нормалі
             glm::vec3 norm = interpolate(u + 0.01, p, points);
             glm::vec3 d = norm - vertex;
             float len = sqrt(d.x*d.x + d.y*d.y + d.z*d.z);
