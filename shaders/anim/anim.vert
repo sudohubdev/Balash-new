@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition;//model space
@@ -11,6 +11,7 @@ layout(location = 4) in vec4 weights;
 out vec2 UV;
 out vec3 Normal;
 out vec3 FragPos; 
+out vec4 debug;
 // Values that stay constant for the whole mesh.
 uniform mat4 projection;
 uniform mat4 view;
@@ -21,7 +22,7 @@ const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
 void main(){
 
-    vec4 totalPosition = vec4(1.0f);
+    vec4 totalPosition = vec4(0.0f);
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
         if(boneIds[i] == -1) 
@@ -33,11 +34,10 @@ void main(){
         }
         vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(vertexPosition,1.0f);
         totalPosition += localPosition * weights[i];
-        vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * vertexNormal;
     }
-		
+    debug = totalPosition * vec4(1.0f);
     mat4 viewModel = view * model;
     gl_Position = projection * viewModel * totalPosition;
     FragPos = vec3(model * totalPosition);
     UV = vertexUV;
-}
+} 

@@ -99,7 +99,8 @@
         "locale": "cpp",
         "stack": "cpp",
         "__nullptr": "cpp",
-        "__string": "cpp"
+        "__string": "cpp",
+        "numbers": "cpp"
     },
     "python.pythonPath": "/bin/python",
     "makefile.launchConfigurations": [

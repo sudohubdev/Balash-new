@@ -39,6 +39,9 @@ int main()
     AnimMesh *mesh2 = new AnimMesh("assets/dancing_vampire.dae");
     mesh2 = mesh2->getChildren()[0];
     mesh2->setTexture(new Texture("assets/Vampire_diffuse.png"));
+    mesh2->rotation = glm::vec3(0, 0, 0);
+    mesh2->scale = glm::vec3(3, 3, 3);
+    mesh2->position = glm::vec3(0, 0, 10);
     Animation dance = Animation("assets/dancing_vampire.dae",mesh2);
     Animator animator(&dance);
 
@@ -53,6 +56,7 @@ int main()
     mesh->moveRelative(glm::vec3(0, 0, -10));
     mesh2->position = glm::vec3(0, 0, 0);
     // render
+    float integal = 0;
     while (!renderer.shouldClose())
     {
         // clear returns time delta
@@ -60,18 +64,12 @@ int main()
         if (tick != tick || tick > 10 || tick < 0)
             tick = 0;
 
-        animator.UpdateAnimation(0.1 * tick);
+        integal += tick;
+        animator.UpdateAnimation(tick*0.01);
         //animation matrix load
         auto transforms = animator.GetFinalBoneMatrices();
-        for (int i = 0; i < transforms.size(); ++i){
-            std::string name = "finalBonesMatrices[" + std::to_string(i) + "]";
-            GLuint MatrixID = glGetUniformLocation(mesh2->getShader(), name.c_str());
-            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &transforms[i][0][0]);
-            for (int j = 0; j < 3; j++){
-                std::cout << transforms[i][0][j] << " ";
-            }
-        }
-        cout << endl;
+        mesh2->transforms = transforms;
+        //cout << endl;
         // circle move cube around dino
         //mesh2->rotation.y += 0.1f;
         //mesh2->moveRelative(glm::vec3(0, 0, tick * 0.1f));

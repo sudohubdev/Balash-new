@@ -20,14 +20,17 @@ void processNode(aiNode *node, const aiScene *scene, AnimMesh *parent)
         std::vector <Vertex> vertices = std::vector<Vertex>();
         for(auto vertex : animMesh->getGeometry()->vertices){
             Vertex vertexstruct;
+            animMesh->SetVertexBoneDataToDefault(vertexstruct);
             vertexstruct.Position = vertex;
             vertices.push_back(vertexstruct);
         }
         animMesh->ExtractBoneWeightForVertices(vertices,mesh,scene);
-        animMesh->boneIDs = std::vector<std::array<int, 4>>();
+        animMesh->boneIDs = std::vector<Tetraint>();
         animMesh->weights = std::vector<glm::vec4>();
         for(auto vertex : vertices){
-            animMesh->boneIDs.push_back(std::array<int, 4>{vertex.m_BoneIDs[0],vertex.m_BoneIDs[1],vertex.m_BoneIDs[2],vertex.m_BoneIDs[3]});
+            Tetraint tetraint = *(Tetraint*)&vertex.m_BoneIDs;
+            
+            animMesh->boneIDs.push_back(tetraint);
             animMesh->weights.push_back(glm::vec4(vertex.m_Weights[0],vertex.m_Weights[1],vertex.m_Weights[2],vertex.m_Weights[3])); 
         }
         animMesh->genBuffers();
@@ -91,11 +94,13 @@ Geometry* processGeometry(aiMesh *mesh, const aiScene *scene)
 AnimMesh::AnimMesh(){
     this->children = std::vector<AnimMesh *>();
     this->parent = nullptr;
+    this->geometry = nullptr;
 }
 AnimMesh::AnimMesh(string path)
 {
     this->children = std::vector<AnimMesh *>();
     this->parent = nullptr;
+    this->geometry = nullptr;
 
     Assimp::Importer importer;
     //we dont use indices
@@ -238,6 +243,14 @@ void AnimMesh::draw(Camera *camera){
     glUniform1f(ID, (float)glfwGetTime());
     ID = glGetUniformLocation(getShader(), "camPos");
     glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
+
+
+    for (int i = 0; i < transforms.size(); ++i){
+        std::string name = "finalBonesMatrices[" + std::to_string(i) + "]";
+        GLuint MatrixID = glGetUniformLocation(getShader(), name.c_str());
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &transforms[i][0][0]);
+    }
+
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
     glDrawElements(GL_TRIANGLES, this->geometry->indices.size(), GL_UNSIGNED_INT, (void *)0);

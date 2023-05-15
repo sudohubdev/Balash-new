@@ -1,11 +1,11 @@
 BUILDDIR=build
 ELFNAME=balash
 
-CXX=g++ -g -O0
+CXX=g++ -g -O0 -std=c++17
 LIBS = tobefilled
 
 ifeq ($(OS),Windows_NT)
-	LIBS = -lpng16 -lglfw3 -lglew32 -lpng -lopengl32
+	LIBS = -lpng16 -lglfw3 -lglew32 -lassimp -lpng -lopengl32
 else
     LIBS = -lpng16 -lglfw -lglew -lassimp -framework OpenGL --std=c++17
 	CXX+=-std=c++17

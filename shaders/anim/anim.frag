@@ -1,8 +1,9 @@
-#version 330 core
+#version 430 core
 //in vec3 fragmentColor;
 in vec2 UV;
 in vec3 Normal;
 in vec3 FragPos; 
+in vec4 debug;
 
 out vec3 color;
 uniform float time;
