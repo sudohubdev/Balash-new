@@ -44,7 +44,7 @@ int main()
     Animation dance = Animation("assets/dancing_vampire.dae",mesh2);
     Animator animator(&dance);
 
-    //some other model
+    /*some other model
     AnimMesh *mesh3 = new AnimMesh("assets/mandalorian.glb");
     mesh3 = mesh3->getChildren()[0];
     mesh3->setTexture(new Texture("assets/mandalorian.png"));
@@ -52,11 +52,12 @@ int main()
     mesh3->position = glm::vec3(20, 0, 10);
     Animation dance2 = Animation("assets/mandalorian.glb",mesh3);
     Animator animator2(&dance2);
+    */
 
   
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
-    scene.addMesh(mesh3);
+    //scene.addMesh(mesh3);
     scene.addMesh(&skybox);
     glDisable(GL_CULL_FACE);
     mesh->moveRelative(glm::vec3(0, 0, -10));
@@ -72,10 +73,10 @@ int main()
 
         integal += tick;
         animator.UpdateAnimation(tick*0.01);
-        animator2.UpdateAnimation(tick*0.01);
+        //animator2.UpdateAnimation(tick*0.01);
         //animation matrix load
         mesh2->transforms = animator.GetFinalBoneMatrices();
-        mesh3->transforms = animator2.GetFinalBoneMatrices();
+        //mesh3->transforms = animator2.GetFinalBoneMatrices();
         //cout << endl;
         // circle move cube around dino
         //mesh2->rotation.y += 0.1f;
