@@ -6,7 +6,8 @@
 #include "engine.hpp"
 #include "objects/NURBS.hpp"
 #include "objects/anim/AnimMesh.hpp"
-
+#include "objects/anim/Animation.hpp"
+#include "objects/anim/Animator.hpp"
 int main()
 {
     // load
@@ -35,7 +36,11 @@ int main()
     Mesh *mesh = new Mesh(texture, geometry);
     mesh->scale = glm::vec3(10, 10, 10);
 
-    Mesh *mesh2 = new AnimMesh("assets/murlok.obj");
+    AnimMesh *mesh2 = new AnimMesh("assets/dancing_vampire.dae");
+    mesh2 = mesh2->getChildren()[0];
+    mesh2->setTexture(new Texture("assets/Vampire_diffuse.png"));
+    Animation dance = Animation("assets/dancing_vampire.dae",mesh2);
+    Animator animator(&dance);
 
     //custom curves
     Texture *uwu = new Texture("assets/uwu.png");
@@ -44,7 +49,7 @@ int main()
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
     scene.addMesh(&skybox);
-
+    glDisable(GL_CULL_FACE);
     mesh->moveRelative(glm::vec3(0, 0, -10));
     mesh2->position = glm::vec3(0, 0, 0);
     // render
@@ -55,9 +60,21 @@ int main()
         if (tick != tick || tick > 10 || tick < 0)
             tick = 0;
 
+        animator.UpdateAnimation(0.1 * tick);
+        //animation matrix load
+        auto transforms = animator.GetFinalBoneMatrices();
+        for (int i = 0; i < transforms.size(); ++i){
+            std::string name = "finalBonesMatrices[" + std::to_string(i) + "]";
+            GLuint MatrixID = glGetUniformLocation(mesh2->getShader(), name.c_str());
+            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &transforms[i][0][0]);
+            for (int j = 0; j < 3; j++){
+                std::cout << transforms[i][0][j] << " ";
+            }
+        }
+        cout << endl;
         // circle move cube around dino
-        mesh2->rotation.y += tick * 0.01f;
-        mesh2->moveRelative(glm::vec3(0, 0, tick * 0.1f));
+        //mesh2->rotation.y += 0.1f;
+        //mesh2->moveRelative(glm::vec3(0, 0, tick * 0.1f));
         camera.position += controls.getVelocity() * (0.4f * tick);
         renderer.Render(&scene, &camera);
         // cout << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << endl;

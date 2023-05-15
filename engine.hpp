@@ -107,6 +107,7 @@ protected:
     GLuint vertexbuffer;
     GLuint uvbuffer;
     GLuint normalbuffer;
+    GLuint elementbuffer;
     GLuint vao;
     GLuint shader;
 };

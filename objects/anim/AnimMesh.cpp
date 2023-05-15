@@ -1,8 +1,5 @@
 #include "AnimMesh.hpp"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 GLuint ANIMSHADER = 0;
 
@@ -20,9 +17,22 @@ void processNode(aiNode *node, const aiScene *scene, AnimMesh *parent)
         //meshes.push_back(processMesh(mesh, scene));
         AnimMesh *animMesh = new AnimMesh();
         animMesh->setGeometry(processGeometry(mesh, scene));
+        std::vector <Vertex> vertices = std::vector<Vertex>();
+        for(auto vertex : animMesh->getGeometry()->vertices){
+            Vertex vertexstruct;
+            vertexstruct.Position = vertex;
+            vertices.push_back(vertexstruct);
+        }
+        animMesh->ExtractBoneWeightForVertices(vertices,mesh,scene);
+        animMesh->boneIDs = std::vector<std::array<int, 4>>();
+        animMesh->weights = std::vector<glm::vec4>();
+        for(auto vertex : vertices){
+            animMesh->boneIDs.push_back(std::array<int, 4>{vertex.m_BoneIDs[0],vertex.m_BoneIDs[1],vertex.m_BoneIDs[2],vertex.m_BoneIDs[3]});
+            animMesh->weights.push_back(glm::vec4(vertex.m_Weights[0],vertex.m_Weights[1],vertex.m_Weights[2],vertex.m_Weights[3])); 
+        }
         animMesh->genBuffers();
         animMesh->attachShader(ANIMSHADER);
-        animMesh->setTexture(new Texture("assets/uvgrid.png"));
+        animMesh->setTexture(new Texture("assets/Vampire_diffuse.png"));
         if (parent != nullptr){
             animMesh->setParent(parent);
             parent->addChild(animMesh);
@@ -126,6 +136,72 @@ AnimMesh::~AnimMesh()
     }
 }
 
+
+std::map<string, BoneInfo> AnimMesh::GetBoneInfoMap() { 
+    return m_BoneInfoMap; 
+}
+int& AnimMesh::GetBoneCount() { 
+    return m_BoneCounter; 
+}
+
+
+void AnimMesh::SetVertexBoneData(Vertex& vertex, int boneID, float weight)
+{
+    for (int i = 0; i < MAX_BONE_WEIGHTS; ++i)
+    {
+        if (vertex.m_BoneIDs[i] < 0)
+        {
+            vertex.m_Weights[i] = weight;
+            vertex.m_BoneIDs[i] = boneID;
+            break;
+        }
+    }
+}
+
+void AnimMesh::SetVertexBoneDataToDefault(Vertex& vertex)
+{
+    for (int i = 0; i < MAX_BONE_WEIGHTS; i++)
+    {
+        vertex.m_BoneIDs[i] = -1;
+        vertex.m_Weights[i] = 0.0f;
+    }
+}
+
+void AnimMesh::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
+{
+    for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
+    {
+        int boneID = -1;
+        std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+        if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end())
+        {
+            BoneInfo newBoneInfo;
+            newBoneInfo.id = m_BoneCounter;
+            newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(
+                mesh->mBones[boneIndex]->mOffsetMatrix);
+            m_BoneInfoMap[boneName] = newBoneInfo;
+            boneID = m_BoneCounter;
+            m_BoneCounter++;
+        }
+        else
+        {
+            boneID = m_BoneInfoMap[boneName].id;
+        }
+        assert(boneID != -1);
+        auto weights = mesh->mBones[boneIndex]->mWeights;
+        int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+        for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
+        {
+            int vertexId = weights[weightIndex].mVertexId;
+            float weight = weights[weightIndex].mWeight;
+            assert(vertexId <= vertices.size());
+            SetVertexBoneData(vertices[vertexId], boneID, weight);
+        }
+    }
+}
+
+
 std::vector<AnimMesh *> AnimMesh::getChildren()
 {
     return this->children;
@@ -163,7 +239,8 @@ void AnimMesh::draw(Camera *camera){
     ID = glGetUniformLocation(getShader(), "camPos");
     glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
 
-    glDrawArrays(GL_TRIANGLES, 0, this->getVertexCount());
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+    glDrawElements(GL_TRIANGLES, this->geometry->indices.size(), GL_UNSIGNED_INT, (void *)0);
     unbindBuffers();
 }
 
@@ -176,6 +253,9 @@ void AnimMesh::genBuffers()
     glGenBuffers(1, &vertexbuffer);    
     glGenBuffers(1, &uvbuffer);
     glGenBuffers(1, &normalbuffer);
+    glGenBuffers(1, &elementbuffer);
+    glGenBuffers(1, &bonebuffer);
+    glGenBuffers(1, &weightbuffer);
     //filling buffers
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     if(this->geometry->vertices.size() > 0)
@@ -186,6 +266,14 @@ void AnimMesh::genBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
     if(this->geometry->normals.size() > 0)
         glBufferData(GL_ARRAY_BUFFER, this->geometry->normals.size() * sizeof(glm::vec3), this->geometry->normals.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+    if(this->geometry->indices.size() > 0)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->geometry->indices.size() * sizeof(GLuint), this->geometry->indices.data(), GL_STATIC_DRAW);
+    //
+    glBindBuffer(GL_ARRAY_BUFFER, bonebuffer);//FIXME:
+    glBufferData(GL_ARRAY_BUFFER, this->boneIDs.size() * sizeof(int) * 4, this->boneIDs.data(), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, weightbuffer);
+    glBufferData(GL_ARRAY_BUFFER, this->weights.size() * sizeof(glm::vec4), this->weights.data(), GL_DYNAMIC_DRAW);
 }
 void AnimMesh::bindBuffers()
 {
@@ -226,6 +314,32 @@ void AnimMesh::bindBuffers()
         0,        // stride
         (void *)0 // array buffer offset
     );
+
+    //bones
+    // ids
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, bonebuffer);
+    glBufferData(GL_ARRAY_BUFFER, this->boneIDs.size() * sizeof(int) * 4, this->boneIDs.data(), GL_DYNAMIC_DRAW);
+    glVertexAttribIPointer(
+        3,        // attribute. No particular reason for 3, but must match the layout in the shader.
+        4,        // size : vector 4d of ints
+        GL_INT, // type
+        0,        // stride
+        (void *)0 // array buffer offset
+    );
+    // weights
+    glEnableVertexAttribArray(4);
+    glBindBuffer(GL_ARRAY_BUFFER, weightbuffer);
+    glBufferData(GL_ARRAY_BUFFER, this->weights.size() * sizeof(glm::vec4), this->weights.data(), GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(
+        4,        // attribute. No particular reason for 4, but must match the layout in the shader.
+        4,        // size : vector 4d
+        GL_FLOAT, // type
+        GL_FALSE, // normalized?
+        0,        // stride
+        (void *)0 // array buffer offset
+    );
+  
     // Bind our texture in Texture Unit 0
     if(this->texture == nullptr)
         return;
@@ -267,8 +381,13 @@ void AnimMesh::setMVP(Camera *camera)
     camera->updateView();
     glm::mat4 MVP = camera->getProjection() * camera->getView() * this->getModelMatrix();
     this->setMVP(this->shader, MVP);
+    //
     GLuint MatrixID = glGetUniformLocation(this->getShader(), "model");
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &this->getModelMatrix()[0][0]);
+    MatrixID = glGetUniformLocation(this->getShader(), "view");
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &camera->getView()[0][0]);
+    MatrixID = glGetUniformLocation(this->getShader(), "projection");
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &camera->getProjection()[0][0]);
 }
 
 GLsizei AnimMesh::getVertexCount()
