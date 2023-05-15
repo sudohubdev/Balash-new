@@ -31,26 +31,32 @@ int main()
     });
     skybox.attachShader(LoadShaders("shaders/sky.vert", "shaders/sky.frag"));
 
-    Texture *texture = new Texture("assets/uvgrid.png");
-    Geometry *geometry = new Geometry("assets/Model1.obj");
+    Texture *texture = new Texture("assets/murlok.png");
+    Geometry *geometry = new Geometry("assets/murlok.obj");
     Mesh *mesh = new Mesh(texture, geometry);
     mesh->scale = glm::vec3(10, 10, 10);
 
     AnimMesh *mesh2 = new AnimMesh("assets/dancing_vampire.dae");
     mesh2 = mesh2->getChildren()[0];
     mesh2->setTexture(new Texture("assets/Vampire_diffuse.png"));
-    mesh2->rotation = glm::vec3(0, 0, 0);
     mesh2->scale = glm::vec3(3, 3, 3);
     mesh2->position = glm::vec3(0, 0, 10);
     Animation dance = Animation("assets/dancing_vampire.dae",mesh2);
     Animator animator(&dance);
 
-    //custom curves
-    Texture *uwu = new Texture("assets/uwu.png");
-    Texture *uvtest = new Texture("assets/uvgrid.png");
+    //some other model
+    AnimMesh *mesh3 = new AnimMesh("assets/mandalorian.glb");
+    mesh3 = mesh3->getChildren()[0];
+    mesh3->setTexture(new Texture("assets/mandalorian.png"));
+    mesh3->scale = glm::vec3(3, 3, 3);
+    mesh3->position = glm::vec3(20, 0, 10);
+    Animation dance2 = Animation("assets/mandalorian.glb",mesh3);
+    Animator animator2(&dance2);
+
   
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
+    scene.addMesh(mesh3);
     scene.addMesh(&skybox);
     glDisable(GL_CULL_FACE);
     mesh->moveRelative(glm::vec3(0, 0, -10));
@@ -66,9 +72,10 @@ int main()
 
         integal += tick;
         animator.UpdateAnimation(tick*0.01);
+        animator2.UpdateAnimation(tick*0.01);
         //animation matrix load
-        auto transforms = animator.GetFinalBoneMatrices();
-        mesh2->transforms = transforms;
+        mesh2->transforms = animator.GetFinalBoneMatrices();
+        mesh3->transforms = animator2.GetFinalBoneMatrices();
         //cout << endl;
         // circle move cube around dino
         //mesh2->rotation.y += 0.1f;

@@ -1,4 +1,4 @@
-#version 430 core
+#version 330 core
 
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition;//model space
@@ -17,7 +17,7 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
-const int MAX_BONES = 100;
+const int MAX_BONES = 200;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
 void main(){

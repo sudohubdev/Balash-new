@@ -6,6 +6,7 @@
 #ifndef ANIMATOR_HPP
 #define ANIMATOR_HPP
 
+#define MAX_BONES 200
 class Animator
 {	
 public:
@@ -14,9 +15,9 @@ public:
         m_CurrentTime = 0.0;
         m_CurrentAnimation = animation;
 
-        m_FinalBoneMatrices.reserve(100);
+        m_FinalBoneMatrices.reserve(MAX_BONES);
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < MAX_BONES; i++)
             m_FinalBoneMatrices.push_back(glm::mat4(1.0f));
     }
 	

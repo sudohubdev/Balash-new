@@ -7,7 +7,7 @@ LIBS = tobefilled
 ifeq ($(OS),Windows_NT)
 	LIBS = -lpng16 -lglfw3 -lglew32 -lassimp -lpng -lopengl32
 else
-    LIBS = -lpng16 -lglfw -lglew -lassimp -framework OpenGL --std=c++17
+    LIBS = -lpng16 -lglfw -lglew -lassimp -framework OpenGL
 	CXX+=-std=c++17
 	OPERATING_SYSTEM := $(shell uname -s)
 	ifeq ($(OPERATING_SYSTEM),Linux)
