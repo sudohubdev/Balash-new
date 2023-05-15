@@ -99,7 +99,8 @@
         "locale": "cpp",
         "stack": "cpp",
         "__nullptr": "cpp",
-        "__string": "cpp"
+        "__string": "cpp",
+        "numbers": "cpp"
     },
     "python.pythonPath": "/bin/python",
     "makefile.launchConfigurations": [
@@ -110,5 +111,8 @@
         }
     ],
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
-    "editor.fontSize": 16
+    "editor.fontSize": 16,
+    "lldb.displayFormat": "auto",
+    "lldb.dereferencePointers": true,
+    "lldb.consoleMode": "commands"
 }
