@@ -14,4 +14,5 @@ uniform samplerCube skybox;
 void main(){
     vec3 objectColor = texture( myTextureSampler, UV ).rgb;
     color = objectColor;
+    color = mix(objectColor, debug.xyz, 0.2);
 }
