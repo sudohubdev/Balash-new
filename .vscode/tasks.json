@@ -62,6 +62,6 @@
                 "clear": false
             },
             "problemMatcher": "$msCompile"
-        },
+        }
     ]
 }

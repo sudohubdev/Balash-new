@@ -3,21 +3,44 @@
 // forward declaration
 GLuint compileShader(const char *path, GLenum shaderType);
 
-GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path, const char *geometry_file_path)
+GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path,
+                   const char *geometry_file_path,
+                   const char *tess_control_file_path,
+                   const char *tess_eval_file_path)
 {
 
     GLuint VertexShaderID = compileShader(vertex_file_path, GL_VERTEX_SHADER);
     GLuint FragmentShaderID = compileShader(fragment_file_path, GL_FRAGMENT_SHADER);
-    GLuint GeometryShaderID;
+    
+    // Compile optional shaders if provided
+    GLuint GeometryShaderID = 0;
     if (geometry_file_path != NULL)
         GeometryShaderID = compileShader(geometry_file_path, GL_GEOMETRY_SHADER);
+
+    GLuint TessControlShaderID = 0;
+    if (tess_control_file_path != NULL)
+        TessControlShaderID = compileShader(tess_control_file_path, GL_TESS_CONTROL_SHADER);
+
+    GLuint TessEvalShaderID = 0;
+    if (tess_eval_file_path != NULL)
+        TessEvalShaderID = compileShader(tess_eval_file_path, GL_TESS_EVALUATION_SHADER);
+
+
     // Link the program
     printf("Linking program\n");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
-    if (GeometryShaderID != NULL)
+    
+    // Attach optional shaders if provided
+    if (GeometryShaderID != 0)
         glAttachShader(ProgramID, GeometryShaderID);
+    
+    if (TessControlShaderID != 0)
+        glAttachShader(ProgramID, TessControlShaderID);
+
+    if (TessEvalShaderID != 0)
+        glAttachShader(ProgramID, TessEvalShaderID);
 
     glLinkProgram(ProgramID);
 
@@ -62,6 +85,7 @@ string getShaderCode(const char *path)
     else
     {
         printf("Impossible to open %s. Are you in the right directory ?\n", path);
+        std::cin.get();
         exit(0);
     }
     return ShaderCode;

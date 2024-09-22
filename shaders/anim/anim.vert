@@ -40,4 +40,5 @@ void main(){
     gl_Position = projection * viewModel * totalPosition;
     FragPos = vec3(model * totalPosition);
     UV = vertexUV;
+    Normal = mat3(transpose(inverse(model))) * vertexNormal;
 } 

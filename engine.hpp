@@ -22,21 +22,23 @@ public:
     void Render(Scene *scene, Camera *camera);
     bool shouldClose();
     GLFWwindow *getWindow();
-
-protected:
-    GLFWwindow *win;
+    void setGLCallback(void (*callback)(void));
     int resx = 1024;
     int resy = 768;
+protected:
+    GLFWwindow *win;
     GLuint VertexArrayID;
     GLuint programID;
     chrono::high_resolution_clock::time_point lastTime;
     std::vector<float> fps_avg;
+    void (*callback)(void) = NULL;
 };
 
 class Camera
 {
 public:
     Camera(float fov, float aspect, float near, float far);
+    Camera(float left, float right, float bottom, float top, float near, float far);
     ~Camera();
     void setView(glm::mat4 View);
     void updateProjection();
@@ -55,6 +57,7 @@ public:
     float aspect{1};
     float near{0.1};
     float far{100};
+    glm::vec4 ortho{0, 0, 0, 0};
 
 protected:
     glm::mat4 Projection;
@@ -116,6 +119,7 @@ class Texture
 {
 public:
     Texture();
+    Texture(unsigned char r, unsigned char g, unsigned char b);
     Texture(const char *path);
     ~Texture();
     GLuint getTextureID();

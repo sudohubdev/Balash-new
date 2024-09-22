@@ -100,7 +100,11 @@
         "stack": "cpp",
         "__nullptr": "cpp",
         "__string": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "__tree": "cpp",
+        "execution": "cpp",
+        "format": "cpp",
+        "span": "cpp"
     },
     "python.pythonPath": "/bin/python",
     "makefile.launchConfigurations": [
@@ -114,5 +118,6 @@
     "editor.fontSize": 16,
     "lldb.displayFormat": "auto",
     "lldb.dereferencePointers": true,
-    "lldb.consoleMode": "commands"
+    "lldb.consoleMode": "evaluate",
+    "lldb.showDisassembly": "auto"
 }

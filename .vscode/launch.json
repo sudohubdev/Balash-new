@@ -13,7 +13,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "sourceFileMap": {
-                "${workspaceFolder}/build/balash": "main.cpp",
+                "${workspaceFolder}/build/balash": "main.cpp"
             },
             "environment": [],
             "externalConsole": false,
@@ -37,7 +37,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "sourceFileMap": {
-                "main.cpp": "${workspaceFolder}/main.cpp",
+                "main.cpp": "${workspaceFolder}/main.cpp"
             },
             "environment": [],
             "externalConsole": true,
@@ -63,7 +63,15 @@
             "program": "${workspaceFolder}/build/balash",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "Make Project",
+            "preLaunchTask": "Make Project"
         },
+        {
+            "type": "cmake",
+            "request": "launch",
+            "name": "Debug portfile(s)",
+            "cmakeDebugType": "external",
+            "pipeName": "/tmp/vcpkg_ext_portfile_dbg",
+            "preLaunchTask": "Debug vcpkg commands"
+        }
     ]
 }

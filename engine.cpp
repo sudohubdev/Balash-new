@@ -16,10 +16,13 @@ Renderer::Renderer()
         exit(-1);
     }
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+#ifndef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+#endif
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
@@ -105,6 +108,12 @@ void Renderer::Render(Scene *scene, Camera *camera)
         //  mesh->bindBuffers();
         mesh->draw(camera);
     }
+    if (this->callback != NULL)
+        this->callback();
+}
+void Renderer::setGLCallback(void (*callback)(void))
+{
+    this->callback = callback;
 }
 bool Renderer::shouldClose()
 {
@@ -130,9 +139,23 @@ Camera::Camera(float fov, float aspect, float near, float far)
     this->rotation = glm::vec3(0, 0, 0);
     updateProjection();
 }
+//ortho
+Camera::Camera(float left, float right, float bottom, float top, float near, float far)
+{
+    this->fov = 0;
+    this->near = near;
+    this->far = far;
+    this->ortho = glm::vec4(left, right, bottom, top);
+    this->position = glm::vec3(0, 0, 0);
+    this->rotation = glm::vec3(0, 0, 0);
+    updateProjection();
+}
 void Camera::updateProjection()
 {
-    this->Projection = glm::perspective(glm::radians(fov), aspect, near, far);
+    if (fov == 0)
+        this->Projection = glm::ortho(ortho.x, ortho.y, ortho.z, ortho.w, near, far);
+    else
+        this->Projection = glm::perspective(glm::radians(fov), aspect, near, far);
 }
 void Camera::setView(glm::mat4 View)
 {
@@ -366,6 +389,15 @@ Texture::Texture()
 {
     // cout << "Texture loaded from memory. beware nulls!" << endl;
     textureID = 0;
+}
+Texture::Texture(unsigned char r, unsigned char g, unsigned char b)
+{
+    unsigned char rgb[3] = {r, g, b};
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, rgb);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 Texture::Texture(const char *path)
 {

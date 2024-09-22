@@ -27,8 +27,11 @@ GLuint loadpng(const char *filename);
 GLuint loadpngSkybox(vector<string> faces);
 
 // loads shaders from files into a program
-GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path, const char *geometry_file_path = NULL);
-
+GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path,
+                   const char *geometry_file_path = NULL,
+                   const char *tess_control_file_path = NULL,
+                   const char *tess_eval_file_path = NULL);
+                   
 // loads a .ttf file into a font
 void loadfont(const char *filename);
 
