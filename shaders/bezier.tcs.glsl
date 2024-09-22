@@ -1,4 +1,4 @@
-#version 430 core
+#version 410 core
 layout(vertices = 4) out;  // Cubic Bezier, 4 control points
 
 void main() {
