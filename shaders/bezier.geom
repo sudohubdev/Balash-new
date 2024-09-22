@@ -29,7 +29,7 @@ void main() {
 
     // Emit the second point of the tangent line
     gl_Position = vec4(curvePoint.xyz + tangent * 0.2, 1.0);
-    outColor = fragColor[0];  // Blue color
+    outColor = vec3(0.0,1.0,0.0);  // Blue color
     EmitVertex();
 
     EndPrimitive();
