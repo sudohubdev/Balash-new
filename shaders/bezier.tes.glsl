@@ -1,4 +1,4 @@
-#version 400 core
+#version 410 core
 
 layout(isolines, equal_spacing, cw) in;
 
