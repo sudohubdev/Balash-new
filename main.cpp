@@ -8,6 +8,7 @@
 #include "objects/anim/AnimMesh.hpp"
 #include "objects/anim/Animation.hpp"
 #include "objects/anim/Animator.hpp"
+#include "objects/tess/tess.hpp"
 
 int main()
 {
@@ -101,12 +102,17 @@ int main()
     mesh6->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
     scene.addMesh(mesh6);
     
+    std::vector<glm::vec2> pointss = std::vector<glm::vec2>();
+    pointss.push_back(glm::vec2(-5, 0));
+    Bezier*  b = new Bezier(pointss);
     
   
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
     scene.addMesh(mesh3);
     scene.addMesh(&skybox);
+    
+    scene.addMesh(b);
     glDisable(GL_CULL_FACE);
     mesh->moveRelative(glm::vec3(15, 0, -10));
     mesh2->position = glm::vec3(0, 0, 0);

@@ -102,7 +102,9 @@
         "__string": "cpp",
         "numbers": "cpp",
         "__tree": "cpp",
-        "execution": "cpp"
+        "execution": "cpp",
+        "format": "cpp",
+        "span": "cpp"
     },
     "python.pythonPath": "/bin/python",
     "makefile.launchConfigurations": [
