@@ -4,10 +4,11 @@
 #include "utils/skybox.hpp"
 #include "objects/lightcube.hpp"
 #include "engine.hpp"
-#include "objects/NURBS.hpp"
+#include "objects/NURBS/NURBS.hpp"
 #include "objects/anim/AnimMesh.hpp"
 #include "objects/anim/Animation.hpp"
 #include "objects/anim/Animator.hpp"
+
 int main()
 {
     // load
@@ -15,6 +16,12 @@ int main()
     // disable vsync
     // glfwSwapInterval(0);
     Camera camera = Camera(75.0f, 1.0f, 0.1f, 200.0f);
+    //ortho camera
+    /*
+    float w = 1024/100;
+    float h = 768/100;
+    camera = Camera(w/ -2, w/ 2, h / -2, h /  2, 0.1f, 500.0f);
+    */
 
     PointerlockControls controls = PointerlockControls(renderer.getWindow(), &camera);
     controls.Lock();
@@ -44,24 +51,70 @@ int main()
     Animation dance = Animation("assets/dancing_vampire.dae",mesh2);
     Animator animator(&dance);
 
-    /*some other model
-    AnimMesh *mesh3 = new AnimMesh("assets/mandalorian.glb");
-    mesh3 = mesh3->getChildren()[0];
-    mesh3->setTexture(new Texture("assets/mandalorian.png"));
+    //some other model
+    Texture *texture3 = new Texture("assets/uvtest.png");
+    Geometry *geometry3 = new Geometry("assets/cube.obj");
+    Mesh *mesh3 = new Mesh(texture3, geometry3);
+    //mesh3->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
     mesh3->scale = glm::vec3(3, 3, 3);
     mesh3->position = glm::vec3(20, 0, 10);
-    Animation dance2 = Animation("assets/mandalorian.glb",mesh3);
-    Animator animator2(&dance2);
-    */
 
+    //draw circle
+    std::vector<glm::vec3> points = std::vector<glm::vec3>();
+    std::vector<glm::vec3> normals = std::vector<glm::vec3>();
+    std::vector<glm::vec2> uvs = std::vector<glm::vec2>();
+    for (float i = 0; i < 360; i += 10)
+    {
+        float ii = glm::radians(i);
+        float prev_ii = glm::radians(i - 10);
+        auto currPoint = glm::vec3(cos(ii) * 10, sin(ii) * 10, 0);
+        auto prevPoint = glm::vec3(cos(prev_ii) * 10, sin(prev_ii) * 10, 0);
+        auto center = glm::vec3(0, 0, 0);
+        points.push_back(currPoint);
+        points.push_back(prevPoint);
+        points.push_back(center);
+        normals.push_back(glm::vec3(0, 0, 1));
+        normals.push_back(glm::vec3(0, 1, 1));
+        normals.push_back(glm::vec3(1, 1, 1));
+        uvs.push_back(glm::vec2(cos(ii) , sin(ii) ));
+        uvs.push_back(glm::vec2(cos(prev_ii) , sin(prev_ii) ));
+        uvs.push_back(glm::vec2(0.5, 0.5));
+    }
+    Geometry *geometry2 = new Geometry(points, uvs, normals);
+    Mesh *mesh4 = new Mesh(new Texture("assets/uwu.png"), geometry2);
+    mesh4->moveRelative(glm::vec3(0, 0, -8));
+    mesh4->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
+    scene.addMesh(mesh4);
+    
+    Geometry *geometry5 = new Geometry("assets/arrow.obj");
+    Mesh *mesh5 = new Mesh(new Texture(255,255,0), geometry5);
+    mesh5->moveRelative(glm::vec3(-5, 0, -5));
+    mesh5->rotation = glm::vec3(3.14159/2, 0, 3.14159/2);
+    mesh5->scale = glm::vec3(1, 5, 1);
+    mesh5->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
+    scene.addMesh(mesh5);
+
+    Mesh *mesh6 = new Mesh(new Texture(0,0,255), geometry5);
+    mesh6->moveRelative(glm::vec3(0, 0, 0));
+    mesh6->rotation = glm::vec3(0, 3.14159/2, 3.14159/2);
+    mesh6->scale = glm::vec3(1, 5, 1);
+    mesh6->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
+    scene.addMesh(mesh6);
+    
+    
   
     scene.addMesh(mesh);
     scene.addMesh(mesh2);
-    //scene.addMesh(mesh3);
+    scene.addMesh(mesh3);
     scene.addMesh(&skybox);
     glDisable(GL_CULL_FACE);
-    mesh->moveRelative(glm::vec3(0, 0, -10));
+    mesh->moveRelative(glm::vec3(15, 0, -10));
     mesh2->position = glm::vec3(0, 0, 0);
+
+    /*renderer.setGLCallback([]() {
+        glClear(GL_DEPTH_BUFFER_BIT);
+    });*/
+    
     // render
     float integal = 0;
     while (!renderer.shouldClose())

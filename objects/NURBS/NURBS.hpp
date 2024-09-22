@@ -1,4 +1,4 @@
-#include "../engine.hpp"
+#include "../../engine.hpp"
 
 #ifndef NURBS_HPP
 #define NURBS_HPP

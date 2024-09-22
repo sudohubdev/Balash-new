@@ -100,7 +100,9 @@
         "stack": "cpp",
         "__nullptr": "cpp",
         "__string": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "__tree": "cpp",
+        "execution": "cpp"
     },
     "python.pythonPath": "/bin/python",
     "makefile.launchConfigurations": [

@@ -142,7 +142,25 @@ NURBS::NURBS(std::vector<glm::vec4> points, int resolution): Geometry()
     this->uvs.reserve(resolution * resolution);
     this->normals = std::vector<glm::vec3>();
     this->normals.reserve(resolution * resolution);
-
+    
+    if(resolution==0){
+        for (int i = 0; i < points.size(); i++)
+        {
+            this->vertices.push_back(glm::vec3(points[i].x, points[i].y, points[i].z));
+            //calculate normals
+            glm::vec3 norm = glm::vec3(0, 0, 0);
+            if (i > 0)
+            {
+                norm += glm::cross(glm::vec3(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y, points[i].z - points[i - 1].z), glm::vec3(0, 0, 1));
+            }
+            if (i < points.size() - 1)
+            {
+                norm += glm::cross(glm::vec3(points[i + 1].x - points[i].x, points[i + 1].y - points[i].y, points[i + 1].z - points[i].z), glm::vec3(0, 0, 1));
+            }
+            this->normals.push_back(glm::normalize(norm));
+        }
+        goto aaa;
+    }
     for(int p=0; p<points.size(); p++)
     {
         for(int i=0; i<resolution; i++)
@@ -158,6 +176,7 @@ NURBS::NURBS(std::vector<glm::vec4> points, int resolution): Geometry()
             this->normals.push_back(normal);
         }
     }
+    aaa:
     this->vertices = vertices2surface(this->vertices);
 
 
