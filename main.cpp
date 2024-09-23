@@ -102,8 +102,18 @@ int main()
     mesh6->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
     scene.addMesh(mesh6);
     
-    std::vector<glm::vec2> pointss = std::vector<glm::vec2>();
-    pointss.push_back(glm::vec2(-5, 0));
+    std::vector<glm::vec3> pointss = {
+      glm::vec3(-0.9f, -0.9f, 0),  
+      glm::vec3(-0.5f,  1.0f, 0),  
+      glm::vec3( 0.5f,  1.0f, 0),  
+      glm::vec3( 0.5f, -0.5f, 0),  
+
+      glm::vec3( 0.5f, -0.5f, 0),  
+      glm::vec3(-0.5f, -1.0f, 0),  
+      glm::vec3(-0.5f, -0.5f, 0),  
+      glm::vec3( 0.5f,  0.5f, 0),  
+    };
+
     Bezier*  b = new Bezier(pointss);
     
   
