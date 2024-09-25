@@ -103,6 +103,7 @@ public:
     // unlike position+=direction, this will move the mesh in the direction it is looking at
     void moveRelative(glm::vec3 move);
     glm::mat4 getModelMatrix();
+    bool debug = false;
 
 protected:
     Texture *texture;
