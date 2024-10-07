@@ -129,9 +129,23 @@ int main()
 
     Bezier*  b = new Bezier(pointss);
     
-  
+
+
+
+
+    std::vector<glm::vec3> quadrat_points = {
+      glm::vec3(-0.5f, -0.5f, 0),  
+      glm::vec3(-0.5f,  0.5f, 0),  
+      glm::vec3( 0.5f,  0.5f, 0),  
+      glm::vec3( 0.5f, -0.5f, 0),   
+    };
+    Mesh *quadrat = new Mesh(new Texture(0,0,255), new Geometry(quadrat_points));
+    quadrat->attachShader(LoadShaders("shaders/simple.vert", "shaders/simple.frag"));
+    quadrat->drawtype = GL_LINE_STRIP;
+    scene.addMesh(quadrat);
+    
     scene.addMesh(mesh);
-    scene.addMesh(mesh2);
+    //scene.addMesh(mesh2);
     scene.addMesh(mesh3);
     scene.addMesh(&skybox);
     

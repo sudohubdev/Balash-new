@@ -226,6 +226,7 @@ Mesh::Mesh(Texture *texture, Geometry *geometry)
 }
 Mesh::Mesh()
 {
+    drawtype = 0;
 }
 Mesh::~Mesh()
 {
@@ -360,7 +361,10 @@ void Mesh::draw(Camera *camera){
         glDrawArrays(GL_PATCHES, 0, getVertexCount());
     }
     else {
-        glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
+        if(drawtype == 0)
+            glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
+        else
+            glDrawArrays(drawtype, 0, getVertexCount());
     }
     unbindBuffers();
 }

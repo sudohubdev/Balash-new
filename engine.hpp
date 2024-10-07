@@ -104,6 +104,7 @@ public:
     void moveRelative(glm::vec3 move);
     glm::mat4 getModelMatrix();
     bool debug = false;
+    GLuint drawtype = 0;
 
 protected:
     Texture *texture;
