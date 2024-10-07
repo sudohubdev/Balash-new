@@ -42,6 +42,13 @@ int main()
     Texture *texture = new Texture("assets/murlok.png");
     Geometry *geometry = new Geometry("assets/murlok.obj");
     Mesh *mesh = new Mesh(texture, geometry);
+    mesh->debug = true;
+    mesh->attachShader(LoadShaders("shaders/cyber/cyber.vert",
+                                    "shaders/cyber/cyber.frag",
+                                    "shaders/cyber/cyber.geom",
+                                    "shaders/cyber/cyber.tcs.glsl",
+                                    "shaders/cyber/cyber.tes.glsl"));
+
     mesh->scale = glm::vec3(10, 10, 10);
 
     AnimMesh *mesh2 = new AnimMesh("assets/dancing_vampire.dae");
@@ -53,9 +60,15 @@ int main()
     Animator animator(&dance);
 
     //some other model
-    Texture *texture3 = new Texture("assets/uvtest.png");
-    Geometry *geometry3 = new Geometry("assets/cube.obj");
+    Texture *texture3 = new Texture("assets/dino.png");
+    Geometry *geometry3 = new Geometry("assets/dino.obj");
     Mesh *mesh3 = new Mesh(texture3, geometry3);
+    mesh3->debug = true;
+    mesh3->attachShader(LoadShaders("shaders/cyber/cyber.vert",
+                                    "shaders/cyber/cyber.frag",
+                                    "shaders/cyber/cyber.geom",
+                                    "shaders/cyber/cyber.tcs.glsl",
+                                    "shaders/cyber/cyber.tes.glsl"));
     //mesh3->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
     mesh3->scale = glm::vec3(3, 3, 3);
     mesh3->position = glm::vec3(20, 0, 10);
@@ -102,17 +115,41 @@ int main()
     mesh6->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
     scene.addMesh(mesh6);
     
-    std::vector<glm::vec2> pointss = std::vector<glm::vec2>();
-    pointss.push_back(glm::vec2(-5, 0));
+    std::vector<glm::vec3> pointss = {
+      glm::vec3(-0.9f, -0.9f, 0),  
+      glm::vec3(-0.5f,  1.0f, 0),  
+      glm::vec3( 0.5f,  1.0f, 0),  
+      glm::vec3( 0.5f, -0.5f, 0),  
+
+      glm::vec3( 0.5f, -0.5f, 0),  
+      glm::vec3(-0.5f, -1.0f, 0),  
+      glm::vec3(-0.5f, -0.5f, 0),  
+      glm::vec3( 0.5f,  0.5f, 0),  
+    };
+
     Bezier*  b = new Bezier(pointss);
     
-  
+
+
+
+
+    std::vector<glm::vec3> quadrat_points = {
+      glm::vec3(-0.5f, -0.5f, 0),  
+      glm::vec3(-0.5f,  0.5f, 0),  
+      glm::vec3( 0.5f,  0.5f, 0),  
+      glm::vec3( 0.5f, -0.5f, 0),   
+    };
+    Mesh *quadrat = new Mesh(new Texture(0,0,255), new Geometry(quadrat_points));
+    quadrat->attachShader(LoadShaders("shaders/simple.vert", "shaders/simple.frag"));
+    quadrat->drawtype = GL_LINE_STRIP;
+    scene.addMesh(quadrat);
+    
     scene.addMesh(mesh);
-    scene.addMesh(mesh2);
+    //scene.addMesh(mesh2);
     scene.addMesh(mesh3);
     scene.addMesh(&skybox);
     
-    scene.addMesh(b);
+    //scene.addMesh(b);
     glDisable(GL_CULL_FACE);
     mesh->moveRelative(glm::vec3(15, 0, -10));
     mesh2->position = glm::vec3(0, 0, 0);

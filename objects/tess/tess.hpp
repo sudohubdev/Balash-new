@@ -8,7 +8,7 @@ using namespace std;
 class Bezier : public Mesh
 {
 public:
-    Bezier(vector<glm::vec2> points);
+    Bezier(vector<glm::vec3> points);
     void bindBuffers();
     void unbindBuffers();
     ~Bezier();
@@ -21,7 +21,7 @@ public:
     void draw(Camera *camera);
 
 protected:
-    vector<glm::vec2> points;
+    vector<glm::vec3> points;
 };
 
 #endif

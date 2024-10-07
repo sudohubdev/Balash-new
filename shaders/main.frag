@@ -28,7 +28,7 @@ void main(){
     // Add stripes artifacts
     float stripes = floor(mod(uv.y * 20.0, 2.0)) * 0.05;
     // Apply distortion and stripes to the UV coordinates
-    vec2 distortedUV = vec2(uv.x + distortion, uv.y + distortion);
+    vec2 distortedUV = vec2(uv.x , uv.y );
 
     vec3 lightPos = vec3(sin(mod(time * 2.0, 3.14159*1.0))*4.0, 4.0, 0.0);
     vec3 lightColor = vec3(1.0, 1.0, 0.8);

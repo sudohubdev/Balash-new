@@ -18,7 +18,7 @@ Renderer::Renderer()
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
 #ifndef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 #endif
 #ifdef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -226,6 +226,7 @@ Mesh::Mesh(Texture *texture, Geometry *geometry)
 }
 Mesh::Mesh()
 {
+    drawtype = 0;
 }
 Mesh::~Mesh()
 {
@@ -356,8 +357,15 @@ void Mesh::draw(Camera *camera){
     glUniform1f(ID, (float)glfwGetTime());
     ID = glGetUniformLocation(getShader(), "camPos");
     glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
-
-    glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
+    if(debug){
+        glDrawArrays(GL_PATCHES, 0, getVertexCount());
+    }
+    else {
+        if(drawtype == 0)
+            glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
+        else
+            glDrawArrays(drawtype, 0, getVertexCount());
+    }
     unbindBuffers();
 }
 void Mesh::moveRelative(glm::vec3 move)

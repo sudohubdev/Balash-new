@@ -4,20 +4,13 @@ using namespace std;
 
 
 
-Bezier::Bezier(vector<glm::vec2> points)
+Bezier::Bezier(vector<glm::vec3> points)
 {
     this->points = points;
     this->shader = LoadShaders("shaders/simple.vert", "shaders/simple.frag", "shaders/bezier.geom", "shaders/bezier.tcs.glsl", "shaders/bezier.tes.glsl");
     this->genBuffers();
 }
 
-float vertices[] = {
-    -0.5f, -0.2f, 0.2f, //P0
-    -0.2f,  0.44f, 0.8f, //P1
-     0.3f, -0.55f, -0.25f, //P2
-     0.1f,  0.7f, 0.3f //P3
-
-};
 void Bezier::genBuffers()
 {
     // Bezier VAO
@@ -26,7 +19,9 @@ void Bezier::genBuffers()
     // Bezier VBO
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, this->points.size() * sizeof(glm::vec3), this->points.data(), GL_STATIC_DRAW);
+   
 }
 
 void Bezier::attachShader(GLuint shader)
@@ -70,10 +65,10 @@ void Bezier::draw(Camera *camera){
     //ID = glGetUniformLocation(getShader(), "camPos");
     //glUniform3f(ID, camera->position.x, camera->position.y, camera->position.z);
     glPatchParameteri(GL_PATCH_VERTICES, 4);
-    //for(size_t i=0;i<points.size() /4; ++i){
-    //    glDrawArrays(GL_PATCHES, i*4, 4);
-    //}
-    glDrawArrays(GL_PATCHES, 0, 4);
+    for(size_t i=0;i<points.size() /4; ++i){
+        glDrawArrays(GL_PATCHES, i*4, 4);
+    }
+    //glDrawArrays(GL_PATCHES, 0, 4);
     unbindBuffers();
 }
 

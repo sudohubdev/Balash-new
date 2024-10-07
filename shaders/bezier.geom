@@ -11,16 +11,10 @@ void main() {
     vec4 curvePoint = gl_in[0].gl_Position;  // Bezier curve point
     vec3 tangent = normalize(gl_in[1].gl_Position.xyz - curvePoint.xyz);  // Tangent vector
     // Assuming an up vector (0, 1, 0) for simplicity
-    vec3 up = vec3(1.0, 0.0, 0.0);
+    vec3 up = vec3(0.0, 0.0, 1.0);
 
     // Calculate the normal vector using cross product
-    vec3 normal = normalize(cross(tangent, curvePoint.xyz));
-
-    // If the tangent is parallel to the up vector, use another vector
-    if (length(normal) < 0.001) {
-        normal = normalize(cross(tangent, vec3(0.0, 1.0, 0.0)));
-    }
-
+    vec3 normal = normalize(cross(tangent, up.xyz));
 
     // Emit the Bezier curve point
     gl_Position = curvePoint;
