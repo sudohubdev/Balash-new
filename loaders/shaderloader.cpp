@@ -58,7 +58,7 @@ GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path,
 
     glDetachShader(ProgramID, VertexShaderID);
     glDetachShader(ProgramID, FragmentShaderID);
-    if (GeometryShaderID != NULL)
+    if (GeometryShaderID != 0)
         glDetachShader(ProgramID, GeometryShaderID);
 
     glDeleteShader(VertexShaderID);
