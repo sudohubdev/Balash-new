@@ -361,7 +361,7 @@ void Mesh::draw(Camera *camera){
         glDrawArrays(GL_PATCHES, 0, getVertexCount());
     }
     else {
-        if(drawtype == 0)
+        if(drawtype == -1)
             glDrawArrays(GL_TRIANGLES, 0, getVertexCount());
         else
             glDrawArrays(drawtype, 0, getVertexCount());

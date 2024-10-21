@@ -1,0 +1,11 @@
+{
+  "dependencies": [
+    "assimp",
+    "fmt",
+    "glew",
+    "glfw3",
+    "glm",
+    "libpng",
+    "stb"
+  ]
+}
