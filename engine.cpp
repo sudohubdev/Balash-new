@@ -226,7 +226,7 @@ Mesh::Mesh(Texture *texture, Geometry *geometry)
 }
 Mesh::Mesh()
 {
-    drawtype = 0;
+    drawtype = -1;
 }
 Mesh::~Mesh()
 {

@@ -57,7 +57,7 @@ static const GLfloat g_vertex_buffer_data[] = {
 Skybox::Skybox(vector<string> faces)
 {
     this->faces = faces;
-    this->drawtype = 0;
+    this->drawtype = -1;
     this->texture = new SkyboxTexture(faces);
     this->genBuffers();
 }

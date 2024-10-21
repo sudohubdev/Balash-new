@@ -44,8 +44,11 @@ int main()
     Geometry *geometry = new Geometry("assets/murlok.obj");
     Mesh *mesh = new Mesh(texture, geometry);
     mesh->debug = true;
-    mesh->attachShader(LoadShaders("shaders/main.vert",
-                                    "shaders/main.frag"));
+    mesh->attachShader(LoadShaders("shaders/cyber/cyber.vert",
+                                    "shaders/cyber/cyber.frag",
+                                    "shaders/cyber/cyber.geom",
+                                    "shaders/cyber/cyber.tcs.glsl",
+                                    "shaders/cyber/cyber.tes.glsl"));
 
     mesh->scale = glm::vec3(10, 10, 10);
 
@@ -59,15 +62,15 @@ int main()
 
     //some other model
     Texture *texture3 = new Texture("assets/uvgrid.png");
-    Geometry *geometry3 = new Geometry("d:\\qqqq.obj");
+    Geometry *geometry3 = new Geometry("assets/dino.obj");
     Mesh *mesh3 = new Mesh(texture3, geometry3);
-    //mesh3->debug = true;
-    /*mesh3->attachShader(LoadShaders("shaders/cyber/cyber.vert",
+    mesh3->debug = true;
+    mesh3->attachShader(LoadShaders("shaders/cyber/cyber.vert",
                                     "shaders/cyber/cyber.frag",
                                     "shaders/cyber/cyber.geom",
                                     "shaders/cyber/cyber.tcs.glsl",
-                                    "shaders/cyber/cyber.tes.glsl"));*/
-    mesh3->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
+                                    "shaders/cyber/cyber.tes.glsl"));
+    //mesh3->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
     mesh3->drawtype = GL_TRIANGLES;
     mesh3->scale = glm::vec3(3, 3, 3);
     mesh3->position = glm::vec3(20, 0, 10);
@@ -97,7 +100,7 @@ int main()
     Mesh *mesh4 = new Mesh(new Texture("assets/uwu.png"), geometry2);
     mesh4->moveRelative(glm::vec3(0, 0, -8));
     mesh4->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
-    //scene.addMesh(mesh4);
+    scene.addMesh(mesh4);
     
     Geometry *geometry5 = new Geometry("assets/arrow.obj");
     Mesh *mesh5 = new Mesh(new Texture(255,255,0), geometry5);
@@ -105,14 +108,14 @@ int main()
     mesh5->rotation = glm::vec3(3.14159/2, 0, 3.14159/2);
     mesh5->scale = glm::vec3(1, 5, 1);
     mesh5->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
-    //scene.addMesh(mesh5);
+    scene.addMesh(mesh5);
 
     Mesh *mesh6 = new Mesh(new Texture(0,0,255), geometry5);
     mesh6->moveRelative(glm::vec3(0, 0, 0));
     mesh6->rotation = glm::vec3(0, 3.14159/2, 3.14159/2);
     mesh6->scale = glm::vec3(1, 5, 1);
     mesh6->attachShader(LoadShaders("shaders/main.vert", "shaders/maincopy.frag"));
-    //scene.addMesh(mesh6);
+    scene.addMesh(mesh6);
     
     std::vector<glm::vec3> pointss = {
       glm::vec3(-0.9f, -0.9f, 0),  
@@ -133,12 +136,12 @@ int main()
 
 
     
-    //Particle *particleEmitter = new Particle();
-    //particleEmitter->drawtype = GL_LINE_STRIP;
-    //scene.addMesh(particleEmitter);
+    Particle *particleEmitter = new Particle();
+    particleEmitter->drawtype = GL_LINE_STRIP;
+    scene.addMesh(particleEmitter);
     
-    //scene.addMesh(mesh);
-    //scene.addMesh(mesh2);
+    scene.addMesh(mesh);
+    scene.addMesh(mesh2);
     scene.addMesh(mesh3);
     scene.addMesh(&skybox);
     
@@ -162,7 +165,7 @@ int main()
 
         integal += tick;
         animator.UpdateAnimation(tick*0.01);
-        //particleEmitter->update(tick*0.01);
+        particleEmitter->update(tick*0.01);
         //animator2.UpdateAnimation(tick*0.01);
         //animation matrix load
         mesh2->transforms = animator.GetFinalBoneMatrices();
